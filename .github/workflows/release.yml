@@ -1,0 +1,47 @@
+# Builds the extension and publishes the zip as a GitHub release when a version tag
+# (v1.2.3, matching package.json) is pushed.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Check the tag matches package.json
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match package.json version $version" >&2
+            exit 1
+          fi
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run zip
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: .output/*-chrome.zip
+          generate_release_notes: true
+          body: |
+            ## Install
+
+            1. Download the **`veil-extension-…-chrome.zip`** file under _Assets_ below and unzip it.
+            2. Open `chrome://extensions` and turn on **Developer mode** (top right).
+            3. Click **Load unpacked** and choose the unzipped folder.
+
+            Chrome can't install the zip directly; it has to be unzipped first. Keep the folder: Chrome loads the
+            extension from it.

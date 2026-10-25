@@ -52,6 +52,9 @@ browser. See [PRIVACY.md](PRIVACY.md).
 ## Install
 
 - **Chrome Web Store:** coming soon.
+- **Download:** get `veil-extension-…-chrome.zip` from the
+  [latest release](https://github.com/Shakibuzzaman3104/whatsapp-privacy-extension/releases/latest) and unzip it.
+  Open `chrome://extensions`, turn on _Developer mode_, click _Load unpacked_ and choose the unzipped folder.
 - **From source:** `npm install && npm run build`, then open `chrome://extensions`, turn on _Developer mode_,
   click _Load unpacked_ and choose `.output/chrome-mv3`.
 
