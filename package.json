@@ -1,0 +1,27 @@
+{
+  "name": "veil-extension",
+  "description": "Veil \u2014 Smart Chat Privacy for WhatsApp Web, Telegram and Messenger",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wxt",
+    "build": "wxt build",
+    "zip": "wxt zip",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "postinstall": "node scripts/copy-vision.mjs && wxt prepare",
+    "e2e": "wxt build && playwright test tests/e2e",
+    "store:shots": "wxt build && playwright test tests/store"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/chrome": "^0.3.6",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5",
+    "wxt": "^0.20.27"
+  },
+  "dependencies": {
+    "@mediapipe/tasks-vision": "^1.1.1"
+  }
+}

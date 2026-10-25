@@ -1,0 +1,11 @@
+{
+  "platform": "web",
+  "device": "desktop",
+  "orientation": null,
+  "posture": null,
+  "page": "app",
+  "screen_dp": 1440,
+  "logical_h": 900,
+  "canvas": "2304x1440",
+  "hinge": null
+}

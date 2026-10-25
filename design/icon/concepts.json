@@ -1,0 +1,58 @@
+{
+  "concept_v2.png": {
+    "path": "design/icon/concept_v2.png",
+    "direction": "a bold lowercase-free abstract V formed by two folds of a draped veil",
+    "prompt": "The attached image is an APPROVED app design, given only as a style reference. Design a NEW launcher icon for this app in the SAME visual language: its palette (#2F6B3F forest green, #F7F4EC warm paper, #1F2A22 ink), rendering style, lighting and mood. Do NOT reproduce the screenshot or any illustration or scene in it (no landscape, horizon, water or card); invent a simple icon composition. Brief: Veil, a Chrome extension that blurs private chats (WhatsApp Web, Telegram, Messenger) until you hover; calm, trustworthy, premium privacy tool. Must read clearly at 16x16 px in a browser toolbar: one bold simple shape, no fine detail.. Direction: a bold lowercase-free abstract V formed by two folds of a draped veil. Square 1:1 canvas. FULL-BLEED: the background fills the entire square edge to edge; no rounded corners, no border or frame, no drop shadow, no device, no mockup, no UI elements. One bold, simple central subject with a strong silhouette that still reads at 48 px, centred and about 60% of the canvas wide so circular masks never cut it, on a solid or smooth-gradient background with little or no texture. No text, letters or numbers anywhere.",
+    "metrics": {
+      "subject_r": 0.915,
+      "bg_resid": 1.8,
+      "edge_touch": 0.0,
+      "flags": [],
+      "palette_de": 10.1
+    },
+    "reference": "design/popup/mockup_v1.png",
+    "quality": "low"
+  },
+  "concept_v1.png": {
+    "path": "design/icon/concept_v1.png",
+    "direction": "a rounded chat bubble whose lower half is covered by a soft frosted veil band (a horizontal blurred stroke)",
+    "prompt": "The attached image is an APPROVED app design, given only as a style reference. Design a NEW launcher icon for this app in the SAME visual language: its palette (#2F6B3F forest green, #F7F4EC warm paper, #1F2A22 ink), rendering style, lighting and mood. Do NOT reproduce the screenshot or any illustration or scene in it (no landscape, horizon, water or card); invent a simple icon composition. Brief: Veil, a Chrome extension that blurs private chats (WhatsApp Web, Telegram, Messenger) until you hover; calm, trustworthy, premium privacy tool. Must read clearly at 16x16 px in a browser toolbar: one bold simple shape, no fine detail.. Direction: a rounded chat bubble whose lower half is covered by a soft frosted veil band (a horizontal blurred stroke). Square 1:1 canvas. FULL-BLEED: the background fills the entire square edge to edge; no rounded corners, no border or frame, no drop shadow, no device, no mockup, no UI elements. One bold, simple central subject with a strong silhouette that still reads at 48 px, centred and about 60% of the canvas wide so circular masks never cut it, on a solid or smooth-gradient background with little or no texture. No text, letters or numbers anywhere.",
+    "metrics": {
+      "subject_r": 0.703,
+      "bg_resid": 4.0,
+      "edge_touch": 0.0,
+      "flags": [],
+      "palette_de": 7.2
+    },
+    "reference": "design/popup/mockup_v1.png",
+    "quality": "low"
+  },
+  "concept_v3.png": {
+    "path": "design/icon/concept_v3.png",
+    "direction": "a chat bubble with a closed-eye glyph inside",
+    "prompt": "The attached image is an APPROVED app design, given only as a style reference. Design a NEW launcher icon for this app in the SAME visual language: its palette (#2F6B3F forest green, #F7F4EC warm paper, #1F2A22 ink), rendering style, lighting and mood. Do NOT reproduce the screenshot or any illustration or scene in it (no landscape, horizon, water or card); invent a simple icon composition. Brief: Veil, a Chrome extension that blurs private chats (WhatsApp Web, Telegram, Messenger) until you hover; calm, trustworthy, premium privacy tool. Must read clearly at 16x16 px in a browser toolbar: one bold simple shape, no fine detail.. Direction: a chat bubble with a closed-eye glyph inside. Square 1:1 canvas. FULL-BLEED: the background fills the entire square edge to edge; no rounded corners, no border or frame, no drop shadow, no device, no mockup, no UI elements. One bold, simple central subject with a strong silhouette that still reads at 48 px, centred and about 60% of the canvas wide so circular masks never cut it, on a solid or smooth-gradient background with little or no texture. No text, letters or numbers anywhere.",
+    "metrics": {
+      "subject_r": 0.693,
+      "bg_resid": 1.9,
+      "edge_touch": 0.0,
+      "flags": [],
+      "palette_de": 9.6
+    },
+    "reference": "design/popup/mockup_v1.png",
+    "quality": "low"
+  },
+  "concept_v4.png": {
+    "path": "design/icon/concept_v4.png",
+    "direction": "a simple shield-shaped chat bubble with three horizontal blurred lines (blurred text)",
+    "prompt": "The attached image is an APPROVED app design, given only as a style reference. Design a NEW launcher icon for this app in the SAME visual language: its palette (#2F6B3F forest green, #F7F4EC warm paper, #1F2A22 ink), rendering style, lighting and mood. Do NOT reproduce the screenshot or any illustration or scene in it (no landscape, horizon, water or card); invent a simple icon composition. Brief: Veil, a Chrome extension that blurs private chats (WhatsApp Web, Telegram, Messenger) until you hover; calm, trustworthy, premium privacy tool. Must read clearly at 16x16 px in a browser toolbar: one bold simple shape, no fine detail.. Direction: a simple shield-shaped chat bubble with three horizontal blurred lines (blurred text). Square 1:1 canvas. FULL-BLEED: the background fills the entire square edge to edge; no rounded corners, no border or frame, no drop shadow, no device, no mockup, no UI elements. One bold, simple central subject with a strong silhouette that still reads at 48 px, centred and about 60% of the canvas wide so circular masks never cut it, on a solid or smooth-gradient background with little or no texture. No text, letters or numbers anywhere.",
+    "metrics": {
+      "subject_r": 0.735,
+      "bg_resid": 3.0,
+      "edge_touch": 0.0,
+      "flags": [],
+      "palette_de": 9.9
+    },
+    "reference": "design/popup/mockup_v1.png",
+    "quality": "low"
+  }
+}

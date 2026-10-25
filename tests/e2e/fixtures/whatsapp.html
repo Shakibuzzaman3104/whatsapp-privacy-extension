@@ -1,0 +1,41 @@
+<!doctype html>
+<!-- Mirrors the structure of web.whatsapp.com captured on 25/10/26 (text is made up). -->
+<html><head><meta charset="utf-8"><title>WhatsApp</title>
+<style>body{font:14px sans-serif;margin:0;display:flex}#side{width:360px}#main{flex:1}
+[data-testid="msg-container"]{padding:6px;margin:6px;border:1px solid #ddd}</style></head>
+<body>
+<div id="side"><div id="pane-side"><div><div role="grid">
+  <div role="row" data-testid="list-item-0"><div role="gridcell" tabindex="0"><div tabindex="-1">
+    <div data-testid="cell-frame-container">
+      <div><div><div><div><img alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACw="></div></div></div></div>
+      <div><div role="gridcell"><div data-testid="cell-frame-title"><div><div><span dir="auto" title="Rahim Ahmed">Rahim Ahmed</span></div></div></div>
+        <div data-testid="cell-frame-primary-detail"><span data-testid="chat-list-timestamp"><span>10:24</span></span></div></div>
+      <div data-testid="cell-frame-secondary"><div><span title="see you at 7?" data-testid="last-msg-status"><span dir="ltr">see you at 7?</span></span></div></div></div>
+    </div></div></div></div>
+  <div role="row" data-testid="list-item-1"><div role="gridcell" tabindex="0"><div tabindex="-1">
+    <div data-testid="cell-frame-container">
+      <div><div><div><div><img alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACw="></div></div></div></div>
+      <div><div role="gridcell"><div data-testid="cell-frame-title"><div><div><span dir="auto" title="bKash">bKash</span></div></div></div>
+        <div data-testid="cell-frame-primary-detail"><span data-testid="chat-list-timestamp"><span>09:10</span></span></div></div>
+      <div data-testid="cell-frame-secondary"><div><span title="" data-testid="last-msg-status"><span dir="ltr">Your bKash verification code is 482913</span></span></div></div></div>
+    </div></div></div></div>
+</div></div></div></div>
+<div id="main">
+  <header data-testid="conversation-header"><div><div role="button"><div><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw="></div></div>
+    <div role="button" data-testid="conversation-info-header"><div><div><div data-testid="conversation-info-header-chat-title"><span>Rahim Ahmed</span></div></div><div><span>last seen today at 10:20</span></div></div></div></div></header>
+  <div data-testid="conversation-panel-messages">
+    <div role="row"><div data-id="false_1@c.us_A" data-testid="conv-msg-A"><div><div><div><div data-testid="msg-container"><div><div><div><div data-pre-plain-text><div><span data-testid="selectable-text" dir="ltr"><span>see you at 7?</span></span></div></div></div></div></div></div></div></div></div></div>
+    <div role="row"><div data-id="false_1@c.us_B" data-testid="conv-msg-B"><div><div><div><div data-testid="msg-container" id="otp"><div><div><div><div data-pre-plain-text><div><span data-testid="selectable-text" dir="ltr"><span>pin is 4321, don't tell anyone</span></span></div></div></div></div></div></div></div></div></div></div>
+    <div role="row"><div data-id="false_1@c.us_C" data-testid="conv-msg-C"><div><div><div><div data-testid="msg-container" id="photo"><img src="blob:https://web.whatsapp.com/abc"></div></div></div></div></div></div>
+  </div>
+  <footer><div data-testid="compose-box"><div contenteditable="true" data-testid="conversation-compose-box-input"></div></div></footer>
+</div>
+<script>
+  // Like WhatsApp, more messages arrive after load.
+  setTimeout(() => {
+    const row = document.createElement('div'); row.setAttribute('role', 'row');
+    row.innerHTML = '<div data-testid="msg-container" id="late"><div data-pre-plain-text><span data-testid="selectable-text"><span>Card: 4111 1111 1111 1111</span></span></div></div>';
+    document.querySelector('[data-testid="conversation-panel-messages"]').append(row);
+  }, 300);
+</script>
+</body></html>

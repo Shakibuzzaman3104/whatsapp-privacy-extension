@@ -1,0 +1,59 @@
+{
+  "platform": "web",
+  "device": "desktop",
+  "orientation": null,
+  "posture": null,
+  "page": "app",
+  "screen_dp": 1440,
+  "logical_h": 900,
+  "canvas": "1140x1800",
+  "hinge": null,
+  "directions": {
+    "families_offered": [
+      "Printed page",
+      "Quiet greyscale",
+      "Night instrument",
+      "Midnight glow",
+      "Saturated wash",
+      "Clean canvas"
+    ],
+    "variants": {
+      "mockup_v1.png": {
+        "avoid": "Avoid shield-and-padlock illustrations, security-score dashboards, and alarming red warnings.",
+        "mood": "Printed page: warm, discreet and assured, like a carefully typeset privacy notice. Keep the complete 380\u00d7600 popup light, with no browser chrome.",
+        "name": "1 \u2014 Private Edition",
+        "palette": "Use background #F7F4EC, surface #FFFCF5, primary text #242820, secondary text #596052 and accent #356B32. The brief\u2019s green overrides the suggested accent hues in every direction. Reserve green for the primary master switch, selected controls, the protected-site dot and the key value \u20187\u2019; keep its total coverage below 10%. Secondary text exceeds 4.5:1 on both backgrounds.",
+        "shape": "Use radii 0, 4 and 8px: square section boundaries, 4px toggle chips and segmented-control segments, 8px site chip and master-switch housing. Use a rectangular sliding master switch with a clear inset thumb. Separate sections with fine neutral rules; use no floating cards or shadows. Use restrained monochrome line icons.",
+        "signature": "Place one narrow, softly blurred ink stripe behind the small Veil logo mark, suggesting concealed writing. Keep the wordmark and all functional text crisp.",
+        "spacing": "Use 20px side margins, 8px gaps within groups, 16px between groups and 12px padding inside the master-control surface. Arrange header, master control, site chip, Blur, Smart guards, chat override and footer vertically. Use a 3-column \u00d7 2-row Blur grid with 32px-high chips and 8px gaps; use 56px guard rows. Keep status text on one line with a condensed face, 12px icons and compact switches.",
+        "theme": "light",
+        "type": "Use a warm editorial serif for the Veil wordmark and the 24px hero \u2018Protection on\u2019; use a narrow humanist sans for controls and statuses. Use an 11/12/14/18/24px scale. Show \u2018WhatsApp Web \u00b7 protected\u2019 with a green dot. Label \u2018Blur\u2019 above six toggle chips: Chat list, Names, Photos, Messages, Media, Typing. Label \u2018Smart guards\u2019 above three icon/title/status/switch rows: \u2018Sensitive content\u2019 / \u20187 items hidden on this page\u2019; \u2018Shoulder-surfer guard\u2019 / \u2018Camera off \u00b7 blurs when a 2nd face appears\u2019; \u2018Auto-blur when away\u2019 / \u2018After 30s idle or when you switch tabs\u2019. Follow with \u2018This chat \u2014 Rahim Ahmed\u2019 and Default / Always blur / Never blur. Set \u2018Panic: Alt+Shift+V\u2019 left and a gear \u2018Settings\u2019 link right in the footer.",
+        "hue": "lime"
+      },
+      "mockup_v2.png": {
+        "avoid": "Avoid incognito-spy imagery, neon hacker terminals, and oversized reassuring checkmarks.",
+        "mood": "Quiet greyscale: precise, calm and premium, with typography and alignment carrying the interface. Keep the complete 380\u00d7600 popup light, with no browser chrome.",
+        "name": "2 \u2014 Discreet Instrument",
+        "palette": "Use background #FAFAF8, surface #EFEFED, primary text #202522, secondary text #5B625D and accent #286849. Follow the brief\u2019s green requirement instead of the suggested sky blue. Keep almost everything neutral; use green only for the primary master switch, selected controls, protected-site dot and the key value \u20187\u2019, covering less than 10%. Secondary text exceeds 4.5:1 on both backgrounds.",
+        "shape": "Use radii 0, 4 and 12px: square divider-led sections, 4px Blur chips and segmented control, 12px site chip and switch tracks. Use flat surfaces and precise 1px neutral borders; omit shadows. Align compact outline icons, row titles and switch edges into consistent vertical columns.",
+        "signature": "Make the small Veil mark from three parallel vertical strokes, with only the middle stroke softly blurred. Repeat that exact mark nowhere else; let it identify the otherwise restrained utility.",
+        "spacing": "Use 16px side margins, 4px gaps within text groups, 16px between sections and 12px surface padding. Put the small logo and wordmark at top, then a full-width master row and site chip. Use 8px gaps in the 3\u00d72 Blur grid, 32px chip heights and 56px Smart guards rows. Reserve a 12px icon column and 28px switch column so every status remains one line. Anchor the two footer items to opposite edges.",
+        "theme": "light",
+        "type": "Use a compact neo-grotesque with open counters and tabular numerals; use a condensed companion for 11px statuses. Set the hero \u2018Protection on\u2019 at 24px semibold and use an 11/12/14/18/24px scale. Include \u2018WhatsApp Web \u00b7 protected\u2019 with a green dot. Under \u2018Blur\u2019, show Chat list, Names, Photos, Messages, Media, Typing as six toggle chips. Under \u2018Smart guards\u2019, give each row an icon and switch: \u2018Sensitive content\u2019 / \u20187 items hidden on this page\u2019; \u2018Shoulder-surfer guard\u2019 / \u2018Camera off \u00b7 blurs when a 2nd face appears\u2019; \u2018Auto-blur when away\u2019 / \u2018After 30s idle or when you switch tabs\u2019. Add \u2018This chat \u2014 Rahim Ahmed\u2019 above Default / Always blur / Never blur. Finish with \u2018Panic: Alt+Shift+V\u2019 left and gear \u2018Settings\u2019 right.",
+        "hue": "sky blue"
+      },
+      "mockup_v3.png": {
+        "avoid": "Avoid antivirus-style scan meters, grids of colourful feature tiles, and decorative frosted-glass panels.",
+        "mood": "Clean canvas: approachable, composed and quietly capable. Make this feel like a polished everyday browser utility. Keep the complete 380\u00d7600 popup light, with no browser chrome.",
+        "name": "3 \u2014 Clear Boundary",
+        "palette": "Use background #F4F5F0, surface #FFFFFF, primary text #192D25, secondary text #526159 and one emerald accent #08734F. Use emerald only for the primary master switch, selected controls, protected-site dot and the key value \u20187\u2019; keep coverage below 10%. Secondary text exceeds 4.5:1 on both backgrounds. Use neutral borders and neutral secondary switch states.",
+        "shape": "Use radii 4, 8 and 16px: 4px segmented-control segments, 8px Blur chips and site chip, 16px master-control surface and switch tracks. Give only the master-control surface a faint downward shadow. Keep the remaining sections directly on the canvas, separated by space and hairlines. Use simple, consistent outline icons.",
+        "signature": "Give the master-control surface a single vertical boundary: a crisp 1px rule with a soft neutral blur immediately to its left. Confine the effect to that edge so the protection control remains clear and readable.",
+        "spacing": "Use 16px side margins, 8px gaps within groups, 16px between groups and 16px master-surface padding. Stack the small Veil logo and wordmark, prominent master control, site chip, Blur grid, Smart guards, chat override and footer. Set Blur chips in a 3\u00d72 grid with 8px gaps and 32px heights. Use 56px guard rows with 12px icons and compact switches; preserve one-line statuses. Keep the footer on one horizontal baseline.",
+        "theme": "light",
+        "type": "Use a humanist sans with slightly squared curves; pair it with a narrow companion for statuses. Make \u2018Protection on\u2019 the 24px semibold hero beside the large master switch. Use an 11/12/14/18/24px scale. Show \u2018WhatsApp Web \u00b7 protected\u2019 with a green dot. Include \u2018Blur\u2019 with Chat list, Names, Photos, Messages, Media, Typing. Include \u2018Smart guards\u2019 with three icon/title/status/switch rows: \u2018Sensitive content\u2019 / \u20187 items hidden on this page\u2019; \u2018Shoulder-surfer guard\u2019 / \u2018Camera off \u00b7 blurs when a 2nd face appears\u2019; \u2018Auto-blur when away\u2019 / \u2018After 30s idle or when you switch tabs\u2019. Set \u2018This chat \u2014 Rahim Ahmed\u2019 above Default / Always blur / Never blur. Place \u2018Panic: Alt+Shift+V\u2019 at footer left and gear \u2018Settings\u2019 at right.",
+        "hue": "emerald green"
+      }
+    }
+  }
+}

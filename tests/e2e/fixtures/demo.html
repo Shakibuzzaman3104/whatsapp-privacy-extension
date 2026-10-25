@@ -1,0 +1,66 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Chats</title><style>
+*{box-sizing:border-box} body{margin:0;font:14.5px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#1d2321;background:#e9e6df;height:100vh;display:flex}
+#side{width:400px;background:#fff;border-right:1px solid #e3e0da;display:flex;flex-direction:column}
+.sh{padding:18px 18px 10px;font-weight:700;font-size:22px} .search{margin:0 14px 10px;padding:9px 14px;border-radius:9px;background:#f1efea;color:#8a8f8a}
+.row .cell{display:flex;gap:12px;padding:10px 16px;align-items:center} .row.sel{background:#f2f0eb}
+.av{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:600}
+.body{flex:1;min-width:0;border-bottom:1px solid #efece6;padding-bottom:10px} .top{display:flex;justify-content:space-between}
+.name{font-weight:600;font-size:15.5px} .time{font-size:12px;color:#8a8f8a} .sec{display:flex;justify-content:space-between;gap:8px;color:#5f6662;font-size:14px}
+.prev{white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .badge{background:#3d8a55;color:#fff;border-radius:10px;padding:0 7px;font-size:12px;font-weight:600}
+#main{flex:1;display:flex;flex-direction:column;background:#efeae2}
+header{display:flex;align-items:center;gap:12px;padding:10px 18px;background:#f7f5f0;border-bottom:1px solid #e3e0da}
+header img{display:none} .hav{width:42px;height:42px;border-radius:50%;background:#C9A27E;color:#fff;display:grid;place-items:center;font-weight:600}
+[data-testid="conversation-info-header-chat-title"]{font-weight:600;font-size:16px} .status{font-size:12.5px;color:#7a807c}
+[data-testid="conversation-panel-messages"]{flex:1;padding:18px 60px;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.mrow{display:flex} .mrow.out{justify-content:flex-end}
+.bub{max-width:62%;padding:7px 10px 18px;border-radius:9px;background:#fff;position:relative;box-shadow:0 1px .5px rgba(0,0,0,.08)} .bub.out{background:#dcefd9}
+.mt{position:absolute;right:8px;bottom:3px;font-size:11px;color:#8a8f8a}
+.photo .ph{width:260px;height:170px;border-radius:6px;background:linear-gradient(135deg,#d9b38c,#8fb3a3 60%,#5d7f9e)} .photo img{display:none}
+footer{padding:10px 18px;background:#f7f5f0} [data-testid="compose-box"]{background:#fff;border-radius:10px;padding:11px 14px;color:#1d2321}
+</style></head><body>
+<div id="side"><div class="sh">Chats</div><div class="search">Search</div><div id="pane-side"><div><div role="grid"><div role="row" class="row sel"><div role="gridcell" tabindex="0"><div tabindex="-1"><div data-testid="cell-frame-container" class="cell">
+<div class="av-wrap"><div class="av" style="background:#C9A27E">AR</div></div>
+<div class="body"><div role="gridcell" class="top"><div data-testid="cell-frame-title" class="name"><div><div><span dir="auto" title="Ayesha Rahman">Ayesha Rahman</span></div></div></div>
+<div data-testid="cell-frame-primary-detail" class="time"><span data-testid="chat-list-timestamp"><span>10:24</span></span></div></div>
+<div data-testid="cell-frame-secondary" class="sec"><div class="prev"><span title="Are we still on for dinner tonight?" data-testid="last-msg-status"><span dir="ltr">Are we still on for dinner tonight?</span></span></div><span class="badge">2</span></div></div>
+</div></div></div></div><div role="row" class="row"><div role="gridcell" tabindex="0"><div tabindex="-1"><div data-testid="cell-frame-container" class="cell">
+<div class="av-wrap"><div class="av" style="background:#D2246C">b</div></div>
+<div class="body"><div role="gridcell" class="top"><div data-testid="cell-frame-title" class="name"><div><div><span dir="auto" title="bKash">bKash</span></div></div></div>
+<div data-testid="cell-frame-primary-detail" class="time"><span data-testid="chat-list-timestamp"><span>09:58</span></span></div></div>
+<div data-testid="cell-frame-secondary" class="sec"><div class="prev"><span title="Cash In Tk 12,500.00 successful. Balance Tk 31,240.50 TrxID 9JK3L2M1N0" data-testid="last-msg-status"><span dir="ltr">Cash In Tk 12,500.00 successful. Balance Tk 31,240.50 TrxID 9JK3L2M1N0</span></span></div></div></div>
+</div></div></div></div><div role="row" class="row"><div role="gridcell" tabindex="0"><div tabindex="-1"><div data-testid="cell-frame-container" class="cell">
+<div class="av-wrap"><div class="av" style="background:#6C8EBF">Dt</div></div>
+<div class="body"><div role="gridcell" class="top"><div data-testid="cell-frame-title" class="name"><div><div><span dir="auto" title="Design team">Design team</span></div></div></div>
+<div data-testid="cell-frame-primary-detail" class="time"><span data-testid="chat-list-timestamp"><span>09:41</span></span></div></div>
+<div data-testid="cell-frame-secondary" class="sec"><div class="prev"><span title="Tanvir: pushed the new onboarding flow" data-testid="last-msg-status"><span dir="ltr">Tanvir: pushed the new onboarding flow</span></span></div><span class="badge">5</span></div></div>
+</div></div></div></div><div role="row" class="row"><div role="gridcell" tabindex="0"><div tabindex="-1"><div data-testid="cell-frame-container" class="cell">
+<div class="av-wrap"><div class="av" style="background:#8DB38B">M</div></div>
+<div class="body"><div role="gridcell" class="top"><div data-testid="cell-frame-title" class="name"><div><div><span dir="auto" title="Mum">Mum</span></div></div></div>
+<div data-testid="cell-frame-primary-detail" class="time"><span data-testid="chat-list-timestamp"><span>Yesterday</span></span></div></div>
+<div data-testid="cell-frame-secondary" class="sec"><div class="prev"><span title="Call me when you're free" data-testid="last-msg-status"><span dir="ltr">Call me when you're free</span></span></div></div></div>
+</div></div></div></div><div role="row" class="row"><div role="gridcell" tabindex="0"><div tabindex="-1"><div data-testid="cell-frame-container" class="cell">
+<div class="av-wrap"><div class="av" style="background:#4F7FD9">G</div></div>
+<div class="body"><div role="gridcell" class="top"><div data-testid="cell-frame-title" class="name"><div><div><span dir="auto" title="Google">Google</span></div></div></div>
+<div data-testid="cell-frame-primary-detail" class="time"><span data-testid="chat-list-timestamp"><span>Yesterday</span></span></div></div>
+<div data-testid="cell-frame-secondary" class="sec"><div class="prev"><span title="G-482913 is your Google verification code." data-testid="last-msg-status"><span dir="ltr">G-482913 is your Google verification code.</span></span></div></div></div>
+</div></div></div></div><div role="row" class="row"><div role="gridcell" tabindex="0"><div tabindex="-1"><div data-testid="cell-frame-container" class="cell">
+<div class="av-wrap"><div class="av" style="background:#B48EAD">F</div></div>
+<div class="body"><div role="gridcell" class="top"><div data-testid="cell-frame-title" class="name"><div><div><span dir="auto" title="Farhan">Farhan</span></div></div></div>
+<div data-testid="cell-frame-primary-detail" class="time"><span data-testid="chat-list-timestamp"><span>Yesterday</span></span></div></div>
+<div data-testid="cell-frame-secondary" class="sec"><div class="prev"><span title="haha that was hilarious" data-testid="last-msg-status"><span dir="ltr">haha that was hilarious</span></span></div></div></div>
+</div></div></div></div><div role="row" class="row"><div role="gridcell" tabindex="0"><div tabindex="-1"><div data-testid="cell-frame-container" class="cell">
+<div class="av-wrap"><div class="av" style="background:#A3A08C">L</div></div>
+<div class="body"><div role="gridcell" class="top"><div data-testid="cell-frame-title" class="name"><div><div><span dir="auto" title="Landlord">Landlord</span></div></div></div>
+<div data-testid="cell-frame-primary-detail" class="time"><span data-testid="chat-list-timestamp"><span>Mon</span></span></div></div>
+<div data-testid="cell-frame-secondary" class="sec"><div class="prev"><span title="Rent for November: send to A/C 1501202345678" data-testid="last-msg-status"><span dir="ltr">Rent for November: send to A/C 1501202345678</span></span></div></div></div>
+</div></div></div></div><div role="row" class="row"><div role="gridcell" tabindex="0"><div tabindex="-1"><div data-testid="cell-frame-container" class="cell">
+<div class="av-wrap"><div class="av" style="background:#E0A458">N</div></div>
+<div class="body"><div role="gridcell" class="top"><div data-testid="cell-frame-title" class="name"><div><div><span dir="auto" title="Nadia">Nadia</span></div></div></div>
+<div data-testid="cell-frame-primary-detail" class="time"><span data-testid="chat-list-timestamp"><span>Sun</span></span></div></div>
+<div data-testid="cell-frame-secondary" class="sec"><div class="prev"><span title="Sending the photos now" data-testid="last-msg-status"><span dir="ltr">Sending the photos now</span></span></div></div></div>
+</div></div></div></div></div></div></div></div>
+<div id="main"><header data-testid="conversation-header"><div role="button"><div class="hav">AR</div><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw="></div>
+<div role="button" data-testid="conversation-info-header"><div><div><div data-testid="conversation-info-header-chat-title"><span>Ayesha Rahman</span></div></div><div class="status"><span>online</span></div></div></div></header>
+<div data-testid="conversation-panel-messages"><div role="row" class="mrow in"><div data-id="m0" data-testid="conv-msg-0"><div data-testid="msg-container" class="bub in"><div data-pre-plain-text><span data-testid="selectable-text" dir="ltr"><span>Hey! Are we still on for dinner tonight?</span></span></div><span class="mt">10:12</span></div></div></div><div role="row" class="mrow out"><div data-id="m1" data-testid="conv-msg-1"><div data-testid="msg-container" class="bub out"><div data-pre-plain-text><span data-testid="selectable-text" dir="ltr"><span>Yes! 8pm at the usual place?</span></span></div><span class="mt">10:13</span></div></div></div><div role="row" class="mrow in"><div data-id="m2" data-testid="conv-msg-2"><div data-testid="msg-container" class="bub in"><div data-pre-plain-text><span data-testid="selectable-text" dir="ltr"><span>Perfect. Also, the wifi password at the flat is sunflower22</span></span></div><span class="mt">10:15</span></div></div></div><div role="row" class="mrow out"><div data-id="m3" data-testid="conv-msg-3"><div data-testid="msg-container" class="bub out"><div data-pre-plain-text><span data-testid="selectable-text" dir="ltr"><span>Got it, thanks</span></span></div><span class="mt">10:16</span></div></div></div><div role="row" class="mrow in"><div data-id="m4" data-testid="conv-msg-4"><div data-testid="msg-container" class="bub in"><div class="photo"><img src="blob:https://web.whatsapp.com/demo" alt=""><div class="ph"></div></div><span class="mt">10:20</span></div></div></div><div role="row" class="mrow in"><div data-id="m5" data-testid="conv-msg-5"><div data-testid="msg-container" class="bub in"><div data-pre-plain-text><span data-testid="selectable-text" dir="ltr"><span>Can you send me the Tk 2,500 for the tickets? My bKash is 01712-345678</span></span></div><span class="mt">10:22</span></div></div></div><div role="row" class="mrow out"><div data-id="m6" data-testid="conv-msg-6"><div data-testid="msg-container" class="bub out"><div data-pre-plain-text><span data-testid="selectable-text" dir="ltr"><span>Sending now</span></span></div><span class="mt">10:23</span></div></div></div><div role="row" class="mrow in"><div data-id="m7" data-testid="conv-msg-7"><div data-testid="msg-container" class="bub in"><div data-pre-plain-text><span data-testid="selectable-text" dir="ltr"><span>Are we still on for dinner tonight?</span></span></div><span class="mt">10:24</span></div></div></div></div>
+<footer><div data-testid="compose-box"><div contenteditable="true" data-testid="conversation-compose-box-input">Can't wait, see you at 8!</div></div></footer></div>
+</body></html>
