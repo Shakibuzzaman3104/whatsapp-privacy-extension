@@ -5,7 +5,7 @@
 import { adapterForHost } from '@/lib/adapters';
 import type { SiteAdapter } from '@/lib/adapters/types';
 import { classify } from '@/lib/classify';
-import { type PageInfo, type Status, type ToContent, sendToBackground } from '@/lib/messages';
+import { type PageInfo, type Status, type ToBackground, type ToContent, sendToBackground } from '@/lib/messages';
 import { verifyPin } from '@/lib/pin';
 import {
   ALL_CATEGORIES, type ChatRule, DEFAULT_SETTINGS, type Settings,
@@ -14,6 +14,7 @@ import {
 import { Shield } from '@/lib/shield';
 import { Snackbar } from '@/lib/snackbar';
 import { buildCss } from '@/lib/styles';
+import type { ContentScriptContext } from 'wxt/utils/content-script-context';
 
 export default defineContentScript({
   matches: [
@@ -23,9 +24,9 @@ export default defineContentScript({
     'https://www.facebook.com/*',
   ],
   runAt: 'document_start',
-  main() {
+  main(ctx) {
     const adapter = adapterForHost(location.hostname);
-    if (adapter) new Engine(adapter).start();
+    if (adapter) new Engine(adapter, ctx).start();
   },
 });
 
@@ -55,13 +56,22 @@ class Engine {
     },
     onUnlocked: () => {
       this.shield.set('lock', false);
-      if (this.shield.has('panic')) void sendToBackground({ type: 'setPanic', on: false });
+      if (this.shield.has('panic')) void this.send({ type: 'setPanic', on: false });
       this.shield.set('away', false);
       this.resetIdle();
     },
   });
 
-  constructor(private readonly adapter: SiteAdapter) {}
+  constructor(private readonly adapter: SiteAdapter, private readonly ctx: ContentScriptContext) {}
+
+  /**
+   * Reloading or updating the extension orphans this script in open tabs, and every
+   * message then throws. The orphan keeps its blur and stops talking until the tab reloads.
+   */
+  private send<T>(message: ToBackground): Promise<T | undefined> {
+    if (this.ctx.isInvalid) return Promise.resolve(undefined);
+    return sendToBackground<T>(message).catch(() => undefined);
+  }
 
   start() {
     const style = document.createElement('style');
@@ -97,12 +107,10 @@ class Engine {
     this.watchPresence();
     this.watchAltKey();
     this.watchIdle();
-    void sendToBackground<Status>({ type: 'getStatus' })
-      .then((status) => {
-        if (status?.panic) this.shield.set('panic', true);
-        if (status?.guard === 'triggered') this.setGuard(true);
-      })
-      .catch(() => {});
+    void this.send<Status>({ type: 'getStatus' }).then((status) => {
+      if (status?.panic) this.shield.set('panic', true);
+      if (status?.guard === 'triggered') this.setGuard(true);
+    });
   }
 
   private get protecting() {
@@ -206,12 +214,11 @@ class Engine {
       if (cached) mark();
       return;
     }
-    void sendToBackground<{ sensitive: boolean }>({ type: 'deepScan', text })
-      .then((result) => {
-        this.deepScanned.set(text, !!result?.sensitive);
-        if (result?.sensitive) mark();
-      })
-      .catch(() => {});
+    void this.send<{ sensitive: boolean }>({ type: 'deepScan', text }).then((result) => {
+      if (!result) return;
+      this.deepScanned.set(text, result.sensitive);
+      if (result.sensitive) mark();
+    });
   }
 
   private onMessage(message: ToContent, reply: (value: PageInfo) => void) {
@@ -260,7 +267,7 @@ class Engine {
     }
     this.snackbar.show('Someone may be looking · chats blurred', {
       label: 'Pause 10 min',
-      onClick: () => void sendToBackground({ type: 'snoozeGuard', minutes: 10 }),
+      onClick: () => void this.send({ type: 'snoozeGuard', minutes: 10 }),
     });
   }
 
@@ -270,23 +277,23 @@ class Engine {
 
   private endPanic() {
     if (this.lockEnabled) this.shield.set('lock', true);
-    else void sendToBackground({ type: 'setPanic', on: false });
+    else void this.send({ type: 'setPanic', on: false });
   }
 
   // Tells the background whether this tab is on screen, so the camera only runs while it is.
   private watchPresence() {
     const report = () =>
-      void sendToBackground({
+      void this.send({
         type: 'presence',
         active: this.protecting && document.visibilityState === 'visible' && document.hasFocus(),
-      }).catch(() => {});
+      });
     document.addEventListener('visibilitychange', report);
     window.addEventListener('focus', report);
     window.addEventListener('blur', () => {
       report();
       if (this.protecting && this.settings.away.enabled && this.settings.away.onWindowBlur) this.coverForAway();
     });
-    window.addEventListener('pagehide', () => void sendToBackground({ type: 'presence', active: false }).catch(() => {}));
+    window.addEventListener('pagehide', () => void this.send({ type: 'presence', active: false }));
     report();
   }
 
