@@ -59,7 +59,7 @@ const current = (): SectionId =>
   (SECTIONS.find((s) => `#${s.id}` === location.hash)?.id ?? 'general');
 
 function renderNav() {
-  nav.innerHTML = `<div class="brand">${LOGO}<div><strong class="serif">Veil</strong><small class="muted">Smart Chat Privacy</small></div></div>` +
+  nav.innerHTML = `<div class="brand">${LOGO}<div><strong class="heading">Veil</strong><small class="muted">Smart Chat Privacy</small></div></div>` +
     SECTIONS.map((s) => `<a href="#${s.id}" ${s.id === current() ? 'aria-current="page"' : ''}>${icon(s.icon)}${s.label}</a>`).join('');
 }
 
@@ -68,23 +68,23 @@ function renderNav() {
 function general(s: Settings) {
   const allBut = s.mode === 'allButIdentity';
   return `
-    <h1 class="serif">General</h1>
+    <h1 class="heading">General</h1>
     <p class="intro muted">Choose where Veil works and what it blurs. Hover anything blurred to see it.</p>
     <div class="grid">
       <div class="stack">
         <div class="card">
-          <div class="card-head"><h2 class="serif">Protection</h2>${toggle('enabled', s.enabled, 'Protection')}</div>
+          <div class="card-head"><h2 class="heading">Protection</h2>${toggle('enabled', s.enabled, 'Protection')}</div>
           <p>Turn everything on or off. Shortcut: <b id="toggle-key">Alt+Shift+B</b>.</p>
           ${SITES.map((site) => `<div class="row"><span class="grow">${SITE_LABELS[site]}</span>${toggle(`site:${site}`, s.sites[site].enabled, `Protect ${SITE_LABELS[site]}`)}</div>`).join('')}
         </div>
         <div class="card">
-          <h2 class="serif">Keyboard shortcuts</h2>
+          <h2 class="heading">Keyboard shortcuts</h2>
           <p>Panic covers every chat tab at once. Change keys in Chrome’s shortcut settings.</p>
           <button class="btn" id="shortcuts">${icon('keyboard')}Change shortcuts</button>
         </div>
       </div>
       <div class="card">
-        <h2 class="serif">Blur mode</h2>
+        <h2 class="heading">Blur mode</h2>
         <p>Custom lets you pick what to blur. “All but names &amp; photos” blurs every message, preview, timestamp and the typing box, and keeps only names and profile photos sharp.</p>
         <div class="segmented" role="group" aria-label="Blur mode">
           <button data-mode="custom" aria-pressed="${!allBut}">Custom</button>
@@ -108,22 +108,22 @@ function nanoPill(state: string) {
 
 function sensitive(s: Settings) {
   return `
-    <h1 class="serif">Sensitive content</h1>
+    <h1 class="heading">Sensitive content</h1>
     <p class="intro muted">Veil keeps messages with private details blurred even when message blur is off. Everything is checked on this device.</p>
     <div class="grid">
       <div class="card">
-        <div class="card-head"><h2 class="serif">Detect</h2>${toggle('sensitive', s.sensitive.enabled, 'Sensitive content')}</div>
+        <div class="card-head"><h2 class="heading">Detect</h2>${toggle('sensitive', s.sensitive.enabled, 'Sensitive content')}</div>
         <p>Automatically find and blur these kinds of private details in your chats.</p>
         ${KINDS.map((k) => `<div class="row">${icon(k.icon)}<span class="label">${k.label}</span><span class="example">${escapeHtml(k.example)}</span>${toggle(`kind:${k.kind}`, s.sensitive.kinds[k.kind] !== false, k.label, !s.sensitive.enabled)}</div>`).join('')}
       </div>
       <div class="stack">
         <div class="card">
-          <div class="card-head"><h2 class="serif">Deep scan — on-device AI</h2>${toggle('deepScan', s.sensitive.deepScan, 'Deep scan', status.nano === 'unavailable')}</div>
+          <div class="card-head"><h2 class="heading">Deep scan — on-device AI</h2>${toggle('deepScan', s.sensitive.deepScan, 'Deep scan', status.nano === 'unavailable')}</div>
           <p>Uses Chrome’s built-in Gemini Nano to catch personal or intimate messages the rules miss. Nothing leaves your computer.</p>
           ${nanoPill(status.nano)}
         </div>
         <div class="card">
-          <h2 class="serif">Appearance</h2>
+          <h2 class="heading">Appearance</h2>
           <p>Choose how strong the blur looks and how to reveal it.</p>
           <label for="blur"><b>Blur strength</b></label>
           <input id="blur" type="range" min="3" max="14" step="1" value="${s.blurStrength}">
@@ -139,20 +139,20 @@ function sensitive(s: Settings) {
 
 function guard(s: Settings) {
   return `
-    <h1 class="serif">Shoulder-surfer guard</h1>
-    <p class="intro muted">Veil counts faces in front of your camera and covers your chats when a second person appears. Video never leaves this device; only a face count is used, and the camera runs only while a chat tab is on screen.</p>
+    <h1 class="heading">Shoulder-surfer guard</h1>
+    <p class="intro muted">Veil counts faces in front of your camera. When a second person appears, it blurs everything on the page and shows a small notice at the top. You can still hover to read. Video never leaves this device; only a face count is used, and the camera runs only while a chat tab is on screen.</p>
     <div class="grid">
       <div class="card">
-        <div class="card-head"><h2 class="serif">Guard</h2>${toggle('guard', s.guard.enabled, 'Shoulder-surfer guard')}</div>
+        <div class="card-head"><h2 class="heading">Guard</h2>${toggle('guard', s.guard.enabled, 'Shoulder-surfer guard')}</div>
         <p>Your camera light will be on while it watches.</p>
-        <div class="row"><span class="grow">Also cover chats when nobody is at the screen<small>Useful if you walk away without locking your computer.</small></span>${toggle('emptySeat', s.guard.emptySeat, 'Cover when nobody is at the screen')}</div>
+        <div class="row"><span class="grow">Also blur everything when nobody is at the screen<small>Useful if you walk away without locking your computer.</small></span>${toggle('emptySeat', s.guard.emptySeat, 'Blur when nobody is at the screen')}</div>
         <div class="row"><span class="grow">Camera access</span><span id="camera-state" class="muted">Checking…</span></div>
       </div>
       <div class="card">
-        <h2 class="serif">Test it</h2>
+        <h2 class="heading">Test it</h2>
         <p>Allow the camera, then check that Veil sees you. The preview is only shown on this page.</p>
         <button class="btn primary" id="camera-test">${icon('camera')}Allow camera &amp; test</button>
-        <div class="camera" hidden id="camera-box"><video id="camera-video" muted playsinline></video><div><div class="faces serif" id="faces">–</div><small class="muted">faces in view</small></div></div>
+        <div class="camera" hidden id="camera-box"><video id="camera-video" muted playsinline></video><div><div class="faces heading" id="faces">–</div><small class="muted">faces in view</small></div></div>
         <p class="error" id="camera-error"></p>
       </div>
     </div>`;
@@ -161,18 +161,18 @@ function guard(s: Settings) {
 function away(s: Settings) {
   const hasPin = !!s.lock.hash;
   return `
-    <h1 class="serif">Away &amp; lock</h1>
+    <h1 class="heading">Away &amp; lock</h1>
     <p class="intro muted">Cover your chats when you step away, and optionally ask for a PIN to show them again.</p>
     <div class="grid">
       <div class="card">
-        <div class="card-head"><h2 class="serif">Auto-blur when away</h2>${toggle('away', s.away.enabled, 'Auto-blur when away')}</div>
+        <div class="card-head"><h2 class="heading">Auto-blur when away</h2>${toggle('away', s.away.enabled, 'Auto-blur when away')}</div>
         <p>Covers the whole page; move the mouse or press a key to come back.</p>
         <div class="row"><span class="grow">Cover after</span>
           <select id="idle">${[15, 30, 60, 120, 300, 600].map((n) => `<option value="${n}" ${s.away.idleSeconds === n ? 'selected' : ''}>${n < 60 ? `${n} seconds` : `${n / 60} minute${n === 60 ? '' : 's'}`} idle</option>`).join('')}</select></div>
         <div class="row"><span class="grow">Also cover when I switch to another app or window</span>${toggle('onWindowBlur', s.away.onWindowBlur, 'Cover when switching apps')}</div>
       </div>
       <div class="card">
-        <h2 class="serif">PIN lock</h2>
+        <h2 class="heading">PIN lock</h2>
         <p>${hasPin ? 'A PIN is set.' : 'Set a 4–8 digit PIN.'} When on, uncovering after being away or after Panic needs the PIN.</p>
         <div class="row"><span class="grow">Require PIN to uncover</span>${toggle('lockOnAway', s.lock.onAway, 'Require PIN', !hasPin)}</div>
         <form class="pin-form" id="pin-form">
@@ -190,10 +190,10 @@ function rules(s: Settings) {
   const entries = Object.entries(s.chatRules);
   const label = { always: 'Always blur', never: 'Never blur', hide: 'Hidden from list' } as const;
   return `
-    <h1 class="serif">Chat rules</h1>
+    <h1 class="heading">Chat rules</h1>
     <p class="intro muted">Set a rule for the open chat from the Veil popup, or right-click inside a chat and choose Veil. Rules are matched by chat name.</p>
     <div class="card">
-      <h2 class="serif">Your rules</h2>
+      <h2 class="heading">Your rules</h2>
       ${entries.length ? entries.map(([key, rule]) => {
         const [site, ...rest] = key.split(':');
         return `<div class="row"><span class="grow"><b>${escapeHtml(rest.join(':'))}</b><small>${SITE_LABELS[site as SiteId] ?? site}</small></span><span class="muted">${label[rule]}</span><button class="btn danger" data-remove-rule="${escapeHtml(key)}">${icon('trash')}Remove</button></div>`;
@@ -203,7 +203,7 @@ function rules(s: Settings) {
 
 function privacy() {
   return `
-    <h1 class="serif">Privacy</h1>
+    <h1 class="heading">Privacy</h1>
     <p class="intro muted">Veil is built so that nothing about your chats ever leaves your computer.</p>
     <div class="card privacy">
       <ul>

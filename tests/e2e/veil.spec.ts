@@ -125,6 +125,41 @@ test('panic covers every chat tab and Alt-reveal mode needs Alt', async () => {
   await page.close();
 });
 
+test('guard blurs everything with a snackbar, still reveals on hover, and restores after', async () => {
+  // Names, photos and messages are normally sharp in this setup.
+  await setSettings({ sites: { whatsapp: { categories: { names: false, photos: false, messages: false, chatList: false } } } });
+  const page = await openWhatsApp();
+  const name = '#pane-side [data-testid="cell-frame-title"]';
+  const message = '#main [data-testid="msg-container"]';
+  expect(await blurOf(page, name)).toBe('none');
+
+  const setGuard = async (on: boolean) => {
+    const control = await context.newPage();
+    await control.goto(`chrome-extension://${extensionId}/popup.html`);
+    await control.evaluate((value) => chrome.tabs.query({ url: 'https://web.whatsapp.com/*' }).then(async (tabs) => {
+      for (const tab of tabs) await chrome.tabs.sendMessage(tab.id!, { type: 'shield', reason: 'guard', on: value });
+    }), on);
+    await control.close();
+  };
+
+  await setGuard(true);
+  await expect(page.locator('veil-snackbar')).toHaveCount(1);
+  await expect(page.locator('veil-shield')).toHaveCount(0);
+  await expect.poll(() => blurOf(page, name)).toContain('blur');
+  expect(await blurOf(page, message)).toContain('blur');
+  expect(await blurOf(page, '#main [data-testid="compose-box"]')).toContain('blur');
+
+  await page.locator('#pane-side [role="row"]').first().hover();
+  await expect.poll(() => blurOf(page, name)).toBe('none');
+  await page.mouse.move(900, 700);
+
+  await setGuard(false);
+  await expect(page.locator('veil-snackbar')).toHaveCount(0);
+  await expect.poll(() => blurOf(page, name)).toBe('none');
+  expect(await blurOf(page, message)).toBe('none');
+  await page.close();
+});
+
 test('away cover appears after idle and lifts on activity', async () => {
   await setSettings({ away: { enabled: true, idleSeconds: 1 } });
   const page = await openWhatsApp();

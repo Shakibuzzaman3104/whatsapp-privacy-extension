@@ -4,7 +4,7 @@
  */
 import type { ChatRule, SiteId } from './settings';
 
-export type ShieldReason = 'panic' | 'guard' | 'away' | 'lock';
+export type ShieldReason = 'panic' | 'away' | 'lock';
 
 export type GuardStatus = 'off' | 'needs-camera' | 'paused' | 'watching' | 'triggered' | 'error';
 export type NanoStatus = 'unavailable' | 'downloadable' | 'downloading' | 'available';

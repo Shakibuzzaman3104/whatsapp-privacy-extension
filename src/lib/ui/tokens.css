@@ -16,7 +16,6 @@
   --dot: #58934F;
   --warn: #9A5B00;
   --danger: #B3261E;
-  --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", sans-serif;
   --r-sm: 8px;
   --r-md: 12px;
@@ -47,7 +46,8 @@
 body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 var(--sans); -webkit-font-smoothing: antialiased; }
 button, input, select { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.serif { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; }
+/* Headings: same sans family as the body, heavier and slightly tighter. */
+.heading { font-weight: 700; letter-spacing: -.02em; }
 .muted { color: var(--muted); }
 .icon { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 

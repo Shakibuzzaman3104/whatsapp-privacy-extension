@@ -2,21 +2,16 @@
  * @author Shakib
  * @since 25/10/26
  *
- * Full-page frosted cover used by panic, the shoulder-surfer guard, away and
- * PIN lock. Lives in a closed shadow root so the site's CSS can't touch it.
+ * Full-page frosted cover used by panic, away and PIN lock. (The camera guard
+ * only blurs and shows a snackbar.) Lives in a closed shadow root so the site's CSS can't touch it.
  */
 import type { ShieldReason } from './messages';
 
-const PRIORITY: ShieldReason[] = ['lock', 'panic', 'guard', 'away'];
+const PRIORITY: ShieldReason[] = ['lock', 'panic', 'away'];
 
 const COPY: Record<ShieldReason, { title: string; body: string; action?: string }> = {
   lock: { title: 'Chats locked', body: 'Enter your Veil PIN to show this page.' },
   panic: { title: 'Covered', body: 'Press Alt+Shift+V again to show your chats.', action: 'Show chats' },
-  guard: {
-    title: 'Someone may be looking',
-    body: 'The camera guard saw another face, or nobody at the screen. Veil uncovers the page when it’s just you.',
-    action: 'It’s fine, pause for 10 min',
-  },
   away: { title: 'Covered while you were away', body: 'Move the mouse or press any key to continue.' },
 };
 
@@ -47,7 +42,7 @@ const CSS = `
   text-align: center;
 }
 svg { width: 44px; height: 44px; }
-h1 { margin: 14px 0 6px; font: 600 22px/1.25 Georgia, "Iowan Old Style", serif; }
+h1 { margin: 14px 0 6px; font-size: 21px; line-height: 1.25; font-weight: 700; letter-spacing: -.02em; }
 .muted { margin: 0; color: #5F665F; }
 form { margin-top: 18px; display: flex; gap: 8px; }
 input {

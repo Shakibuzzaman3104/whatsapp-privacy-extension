@@ -12,6 +12,7 @@ import {
   chatKey, effectiveCategories, loadSettings, onSettingsChanged, resolveChatRule, updateSettings,
 } from '@/lib/settings';
 import { Shield } from '@/lib/shield';
+import { Snackbar } from '@/lib/snackbar';
 import { buildCss } from '@/lib/styles';
 
 export default defineContentScript({
@@ -41,6 +42,9 @@ class Engine {
   private idleTimer = 0;
   private chatTitle: string | null = null;
   private wasProtecting = false;
+  /** The camera guard saw someone else: blur everything, but hover still reveals. */
+  private guardActive = false;
+  private readonly snackbar = new Snackbar();
   private readonly shield = new Shield({
     verifyPin: (pin) => {
       const { hash, salt } = this.settings.lock;
@@ -48,7 +52,6 @@ class Engine {
     },
     onAction: (reason) => {
       if (reason === 'panic') this.endPanic();
-      if (reason === 'guard') void sendToBackground({ type: 'snoozeGuard', minutes: 10 });
     },
     onUnlocked: () => {
       this.shield.set('lock', false);
@@ -97,7 +100,7 @@ class Engine {
     void sendToBackground<Status>({ type: 'getStatus' })
       .then((status) => {
         if (status?.panic) this.shield.set('panic', true);
-        if (status?.guard === 'triggered') this.shield.set('guard', true);
+        if (status?.guard === 'triggered') this.setGuard(true);
       })
       .catch(() => {});
   }
@@ -129,12 +132,13 @@ class Engine {
       this.dirty = [];
     }
     this.shield.ensureAttached();
+    this.snackbar.ensureAttached();
   }
 
   private applyClasses() {
     const s = this.settings;
     const rule = resolveChatRule(s, this.adapter.id, this.chatTitle);
-    const on = effectiveCategories(s, this.adapter.id, rule);
+    const on = this.guardActive ? new Set(ALL_CATEGORIES) : effectiveCategories(s, this.adapter.id, rule);
     const cls = this.html.classList;
     this.wasProtecting = this.protecting;
     cls.toggle('veil-on', this.wasProtecting);
@@ -213,6 +217,10 @@ class Engine {
   private onMessage(message: ToContent, reply: (value: PageInfo) => void) {
     switch (message.type) {
       case 'shield':
+        if (message.reason === 'guard') {
+          this.setGuard(message.on);
+          return;
+        }
         if (!message.on && message.reason === 'panic' && this.lockEnabled && this.shield.has('panic')) {
           this.shield.set('lock', true);
           return;
@@ -240,6 +248,19 @@ class Engine {
       const key = chatKey(this.adapter.id, title);
       if (rule === 'default') delete s.chatRules[key];
       else s.chatRules[key] = rule;
+    });
+  }
+
+  private setGuard(on: boolean) {
+    this.guardActive = on;
+    this.applyClasses();
+    if (!on) {
+      this.snackbar.hide();
+      return;
+    }
+    this.snackbar.show('Someone may be looking · chats blurred', {
+      label: 'Pause 10 min',
+      onClick: () => void sendToBackground({ type: 'snoozeGuard', minutes: 10 }),
     });
   }
 

@@ -36,8 +36,8 @@ English and Bangla. Optional _deep scan_ uses Chrome's built-in Gemini Nano to c
 messages the rules miss, on-device.
 
 **Shoulder-surfer guard** (off by default). A face detector bundled with the extension (MediaPipe BlazeFace)
-counts faces at about 3 fps and covers every chat when a second face appears. Optionally it also covers chats when
-nobody is at the screen. The camera only runs while a chat tab is on screen and focused, and frames never leave
+counts faces at about 3 fps. When a second face appears it blurs everything (names and photos too) and shows a small
+notice at the top; hover still reveals. Optionally it does the same when nobody is at the screen. The camera only runs while a chat tab is on screen and focused, and frames never leave
 memory.
 
 **Away & lock.** Covers chats after you go idle, or when you switch to another app. Optionally needs a PIN to

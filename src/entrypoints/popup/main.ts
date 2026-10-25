@@ -41,10 +41,10 @@ function guardLine(state: GuardStatus): string {
   switch (state) {
     case 'needs-camera': return `<small class="warn">Needs camera access · <a href="#" data-open="guard">Allow</a></small>`;
     case 'watching': return '<small>Watching · video never leaves this device</small>';
-    case 'triggered': return '<small class="warn">Covering · someone else is in view</small>';
+    case 'triggered': return '<small class="warn">Blurring everything · someone else is in view</small>';
     case 'paused': return '<small>Paused for a few minutes</small>';
     case 'error': return '<small class="warn">Camera unavailable</small>';
-    default: return '<small>Off · covers chats when a 2nd face appears</small>';
+    default: return '<small>Off · blurs everything when a 2nd face appears</small>';
   }
 }
 
@@ -83,7 +83,7 @@ function render() {
 
   const chat = page?.chatTitle
     ? `<section class="chat">
-        <div class="section-head"><h3 class="serif">This chat — ${escapeHtml(page.chatTitle)}</h3></div>
+        <div class="section-head"><h3 class="heading">This chat — ${escapeHtml(page.chatTitle)}</h3></div>
         <div class="segmented" role="group" aria-label="Rule for this chat">
           ${(['default', 'always', 'never'] as ChatRule[]).map((r) => `<button data-rule="${r}" aria-pressed="${page!.rule === r}">${{ default: 'Default', always: 'Always blur', never: 'Never blur' }[r as 'default']}</button>`).join('')}
         </div>
@@ -91,17 +91,17 @@ function render() {
     : '';
 
   app.innerHTML = `
-    <header class="brand">${LOGO}<div><h1 class="serif">Veil</h1><p class="muted">Smart Chat Privacy</p></div></header>
+    <header class="brand">${LOGO}<div><h1 class="heading">Veil</h1><p class="muted">Smart Chat Privacy</p></div></header>
 
     <div class="protection">
-      <div><h2 class="serif">Protection ${s.enabled ? 'on' : 'off'}</h2>${status.panic ? '<p class="muted">Panic cover is up</p>' : ''}</div>
+      <div><h2 class="heading">Protection ${s.enabled ? 'on' : 'off'}</h2>${status.panic ? '<p class="muted">Panic cover is up</p>' : ''}</div>
       ${toggle('enabled', s.enabled, 'Protection')}
     </div>
     ${siteChip}
 
     <div class="${s.enabled ? '' : 'dim'}">
       <section>
-        <div class="section-head"><h3 class="serif">Blur</h3>${page ? toggle('site-enabled', siteOn, `Protect ${page.label}`) : ''}</div>
+        <div class="section-head"><h3 class="heading">Blur</h3>${page ? toggle('site-enabled', siteOn, `Protect ${page.label}`) : ''}</div>
         <div class="segmented mode" role="group" aria-label="Blur mode">
           <button data-mode="custom" aria-pressed="${!allBut}">Custom</button>
           <button data-mode="allButIdentity" aria-pressed="${allBut}">All but names &amp; photos</button>
@@ -110,7 +110,7 @@ function render() {
       </section>
 
       <section>
-        <div class="section-head"><h3 class="serif">Smart guards</h3></div>
+        <div class="section-head"><h3 class="heading">Smart guards</h3></div>
         <div class="guard">${icon('shield')}<div class="text"><strong>Sensitive content</strong>${sensitiveLine(s)}</div>${toggle('sensitive', s.sensitive.enabled, 'Sensitive content')}</div>
         <div class="guard">${icon('users')}<div class="text"><strong>Shoulder-surfer guard</strong>${guardLine(s.guard.enabled ? status.guard : 'off')}</div>${toggle('guard', s.guard.enabled, 'Shoulder-surfer guard')}</div>
         <div class="guard">${icon('clock')}<div class="text"><strong>Auto-blur when away</strong>${s.away.enabled ? awayLine(s) : '<small>Off</small>'}</div>${toggle('away', s.away.enabled, 'Auto-blur when away')}</div>

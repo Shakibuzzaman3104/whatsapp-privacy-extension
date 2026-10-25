@@ -24,7 +24,7 @@ BLUR WHAT YOU CHOOSE
 SMART PROTECTION
 • Sensitive content: one-time codes, card numbers, bank accounts, passwords, money and bKash/Nagad alerts stay blurred even when message blur is off. Works in English and Bangla
 • Deep scan (optional): Chrome's built-in Gemini Nano catches personal or intimate messages the rules miss, on your device
-• Shoulder-surfer guard (optional): covers your chats when a second face appears in front of the camera
+• Shoulder-surfer guard (optional): blurs everything, with a small notice, when a second face appears in front of the camera
 • Away mode: covers chats when you're idle or switch to another app, with an optional PIN
 • Panic key: Alt+Shift+V covers every chat tab at once
 • Per-chat rules: always blur, never blur, or hide a chat from the list
