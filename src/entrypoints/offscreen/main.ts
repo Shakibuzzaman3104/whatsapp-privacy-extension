@@ -6,15 +6,18 @@
  * this page: only the number of faces is sent to the background.
  */
 import { FaceDetector } from '@mediapipe/tasks-vision';
+import { countFaces } from '@/lib/faces';
 import { SAMPLE_MS } from '@/lib/guard';
 import { sendToBackground } from '@/lib/messages';
 
 const video = document.getElementById('camera') as HTMLVideoElement;
+const canvas = document.createElement('canvas');
 
 async function start() {
   let stream: MediaStream;
   try {
-    stream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240, frameRate: 5 } });
+    // Small frames hide people further back; 720p plus tiling finds faces down to ~5% of the frame width.
+    stream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 } } });
   } catch (error) {
     await sendToBackground({ type: 'cameraError', name: (error as DOMException).name ?? 'Error' });
     return;
@@ -29,15 +32,14 @@ async function start() {
     },
     {
       baseOptions: { modelAssetPath: chrome.runtime.getURL('/mediapipe/blaze_face_short_range.tflite'), delegate: 'CPU' },
-      runningMode: 'VIDEO',
+      runningMode: 'IMAGE',
       minDetectionConfidence: 0.6,
     },
   );
 
   setInterval(() => {
     if (video.readyState < 2) return;
-    const { detections } = detector.detectForVideo(video, performance.now());
-    void sendToBackground({ type: 'faces', count: detections.length });
+    void sendToBackground({ type: 'faces', count: countFaces(detector, video, canvas) });
   }, SAMPLE_MS);
 }
 

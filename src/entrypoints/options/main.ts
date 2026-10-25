@@ -4,6 +4,7 @@
  */
 import { FaceDetector } from '@mediapipe/tasks-vision';
 import type { SensitiveKind } from '@/lib/classify';
+import { countFaces } from '@/lib/faces';
 import { type Status, sendToBackground } from '@/lib/messages';
 import { hashPin } from '@/lib/pin';
 import {
@@ -297,13 +298,22 @@ async function testCamera() {
   error.textContent = '';
   let stream: MediaStream;
   try {
-    stream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240 } });
+    stream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 } } });
   } catch (e) {
     error.textContent = (e as DOMException).name === 'NotAllowedError'
       ? 'Camera access was blocked. Allow it from the camera icon in the address bar, then try again.'
       : 'No camera found.';
     return;
   }
+  let timer = 0;
+  let detector: FaceDetector | null = null;
+  // Set before saving settings, so the re-render that follows leaves the preview alone.
+  stopCamera = () => {
+    clearInterval(timer);
+    stream.getTracks().forEach((t) => t.stop());
+    detector?.close();
+    stopCamera = null;
+  };
   await sendToBackground({ type: 'cameraGranted' });
   await updateSettings((s) => { s.guard.enabled = true; });
 
@@ -312,28 +322,26 @@ async function testCamera() {
   box.hidden = false;
   video.srcObject = stream;
   await video.play();
-  const detector = await FaceDetector.createFromOptions(
+  const ready = await FaceDetector.createFromOptions(
     {
       wasmLoaderPath: chrome.runtime.getURL('/mediapipe/vision_wasm_internal.js'),
       wasmBinaryPath: chrome.runtime.getURL('/mediapipe/vision_wasm_internal.wasm'),
     },
     {
       baseOptions: { modelAssetPath: chrome.runtime.getURL('/mediapipe/blaze_face_short_range.tflite'), delegate: 'CPU' },
-      runningMode: 'VIDEO',
+      runningMode: 'IMAGE',
       minDetectionConfidence: 0.6,
     },
   );
-  const timer = setInterval(() => {
+  // The user left the guard section while the model was loading.
+  if (!stopCamera) return ready.close();
+  detector = ready;
+  const canvas = document.createElement('canvas');
+  timer = window.setInterval(() => {
     if (video.readyState < 2) return;
     const faces = document.getElementById('faces');
-    if (faces) faces.textContent = String(detector.detectForVideo(video, performance.now()).detections.length);
+    if (faces) faces.textContent = String(countFaces(ready, video, canvas));
   }, 333);
-  stopCamera = () => {
-    clearInterval(timer);
-    stream.getTracks().forEach((t) => t.stop());
-    detector.close();
-    stopCamera = null;
-  };
 }
 
 async function downloadNano() {
