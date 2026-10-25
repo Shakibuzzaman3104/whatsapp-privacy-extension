@@ -67,23 +67,20 @@ test('chat page shots', async () => {
   await page.waitForTimeout(300);
   await page.screenshot({ path: `${OUT}/default-hover.png` });
 
-  const popupPage = await context.newPage();
-  await popupPage.close();
   const control = await context.newPage();
   await control.goto(`chrome-extension://${extensionId}/popup.html`);
-  await control.evaluate(() => chrome.tabs.query({ url: 'https://web.whatsapp.com/*' }).then(async ([tab]) => {
-    await chrome.tabs.sendMessage(tab.id!, { type: 'shield', reason: 'guard', on: true });
-  }));
+  await control.evaluate(() => chrome.runtime.sendMessage({ type: 'setPanic', on: true }));
   await page.bringToFront();
+  await page.locator('veil-shield').waitFor({ state: 'attached' });
   await page.mouse.move(1270, 790);
   await page.waitForTimeout(400);
-  await page.screenshot({ path: `${OUT}/guard.png` });
+  await page.screenshot({ path: `${OUT}/cover.png` });
+  await control.evaluate(() => chrome.runtime.sendMessage({ type: 'setPanic', on: false }));
   await control.close();
   await page.close();
 });
 
 test('popup and settings shots', async () => {
-  // Headless Chrome has no camera, so the guard is shown in its honest off state.
   await setSettings({ away: { enabled: true, idleSeconds: 60 } });
   const page = await openDemo();
   const tabId = await worker.evaluate(() => chrome.tabs.query({ url: 'https://web.whatsapp.com/*' }).then(([t]) => t.id!));
@@ -100,7 +97,7 @@ test('popup and settings shots', async () => {
   await popup.screenshot({ path: `${OUT}/popup.png`, fullPage: true });
 
   const options = await context.newPage();
-  for (const section of ['general', 'sensitive', 'guard']) {
+  for (const section of ['general', 'sensitive', 'away']) {
     await options.goto(`chrome-extension://${extensionId}/options.html#${section}`);
     await options.waitForTimeout(200);
     await options.screenshot({ path: `${OUT}/options-${section}.png` });

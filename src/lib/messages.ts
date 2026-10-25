@@ -6,7 +6,6 @@ import type { ChatRule, SiteId } from './settings';
 
 export type ShieldReason = 'panic' | 'away' | 'lock';
 
-export type GuardStatus = 'off' | 'needs-camera' | 'paused' | 'watching' | 'triggered' | 'error';
 export type NanoStatus = 'unavailable' | 'downloadable' | 'downloading' | 'available';
 
 export interface PageInfo {
@@ -19,24 +18,18 @@ export interface PageInfo {
 
 export interface Status {
   panic: boolean;
-  guard: GuardStatus;
   nano: NanoStatus;
 }
 
 /** Content script -> background */
 export type ToBackground =
-  | { type: 'presence'; active: boolean }
   | { type: 'deepScan'; text: string }
   | { type: 'setPanic'; on: boolean }
-  | { type: 'snoozeGuard'; minutes: number }
-  | { type: 'getStatus' }
-  | { type: 'cameraGranted' }
-  | { type: 'faces'; count: number }
-  | { type: 'cameraError'; name: string };
+  | { type: 'getStatus' };
 
 /** Background or popup -> content script */
 export type ToContent =
-  | { type: 'shield'; reason: 'panic' | 'guard'; on: boolean }
+  | { type: 'shield'; reason: 'panic'; on: boolean }
   | { type: 'setChatRule'; rule: ChatRule }
   | { type: 'getPageInfo' };
 

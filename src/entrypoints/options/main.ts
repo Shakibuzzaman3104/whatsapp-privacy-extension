@@ -2,9 +2,7 @@
  * @author Shakib
  * @since 25/10/26
  */
-import { FaceDetector } from '@mediapipe/tasks-vision';
 import type { SensitiveKind } from '@/lib/classify';
-import { countFaces } from '@/lib/faces';
 import { type Status, sendToBackground } from '@/lib/messages';
 import { hashPin } from '@/lib/pin';
 import {
@@ -13,12 +11,11 @@ import {
 } from '@/lib/settings';
 import { type IconName, LOGO, icon } from '@/lib/ui/icons';
 
-type SectionId = 'general' | 'sensitive' | 'guard' | 'away' | 'rules' | 'privacy';
+type SectionId = 'general' | 'sensitive' | 'away' | 'rules' | 'privacy';
 
 const SECTIONS: { id: SectionId; label: string; icon: IconName }[] = [
   { id: 'general', label: 'General', icon: 'gear' },
   { id: 'sensitive', label: 'Sensitive content', icon: 'shield' },
-  { id: 'guard', label: 'Shoulder-surfer guard', icon: 'users' },
   { id: 'away', label: 'Away & lock', icon: 'clock' },
   { id: 'rules', label: 'Chat rules', icon: 'chat' },
   { id: 'privacy', label: 'Privacy', icon: 'lock' },
@@ -50,8 +47,7 @@ declare const LanguageModel: {
 const nav = document.getElementById('nav')!;
 const main = document.getElementById('main')!;
 let settings: Settings;
-let status: Status = { panic: false, guard: 'off', nano: 'unavailable' };
-let stopCamera: (() => void) | null = null;
+let status: Status = { panic: false, nano: 'unavailable' };
 
 const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 const toggle = (id: string, checked: boolean, label: string, disabled = false) =>
@@ -138,27 +134,6 @@ function sensitive(s: Settings) {
     </div>`;
 }
 
-function guard(s: Settings) {
-  return `
-    <h1 class="heading">Shoulder-surfer guard</h1>
-    <p class="intro muted">Veil counts faces in front of your camera. When a second person appears, it blurs everything on the page and shows a small notice at the top. You can still hover to read. Video never leaves this device; only a face count is used, and the camera runs only while a chat tab is on screen.</p>
-    <div class="grid">
-      <div class="card">
-        <div class="card-head"><h2 class="heading">Guard</h2>${toggle('guard', s.guard.enabled, 'Shoulder-surfer guard')}</div>
-        <p>Your camera light will be on while it watches.</p>
-        <div class="row"><span class="grow">Also blur everything when nobody is at the screen<small>Useful if you walk away without locking your computer.</small></span>${toggle('emptySeat', s.guard.emptySeat, 'Blur when nobody is at the screen')}</div>
-        <div class="row"><span class="grow">Camera access</span><span id="camera-state" class="muted">Checking…</span></div>
-      </div>
-      <div class="card">
-        <h2 class="heading">Test it</h2>
-        <p>Allow the camera, then check that Veil sees you. The preview is only shown on this page.</p>
-        <button class="btn primary" id="camera-test">${icon('camera')}Allow camera &amp; test</button>
-        <div class="camera" hidden id="camera-box"><video id="camera-video" muted playsinline></video><div><div class="faces heading" id="faces">–</div><small class="muted">faces in view</small></div></div>
-        <p class="error" id="camera-error"></p>
-      </div>
-    </div>`;
-}
-
 function away(s: Settings) {
   const hasPin = !!s.lock.hash;
   return `
@@ -210,18 +185,16 @@ function privacy() {
       <ul>
         <li>No servers, no accounts, no analytics. Veil makes no network requests.</li>
         <li>Message text is checked on this device by built-in rules, or by Chrome’s on-device Gemini Nano if you turn on deep scan.</li>
-        <li>The camera guard counts faces on this device. Frames are never stored or sent anywhere.</li>
         <li>Settings and chat rules are stored in Chrome on this computer only.</li>
         <li>Your PIN is stored only as a salted PBKDF2 hash.</li>
       </ul>
     </div>`;
 }
 
-const RENDERERS: Record<SectionId, (s: Settings) => string> = { general, sensitive, guard, away, rules, privacy };
+const RENDERERS: Record<SectionId, (s: Settings) => string> = { general, sensitive, away, rules, privacy };
 
 function render() {
   renderNav();
-  if (current() !== 'guard') stopCamera?.();
   main.innerHTML = RENDERERS[current()](settings);
   void afterRender();
 }
@@ -231,11 +204,6 @@ async function afterRender() {
     const commands = await chrome.commands.getAll();
     const el = document.getElementById('toggle-key');
     if (el) el.textContent = commands.find((c) => c.name === 'toggle')?.shortcut || 'not set';
-  }
-  if (current() === 'guard') {
-    const { cameraGranted } = await chrome.storage.local.get('cameraGranted');
-    const el = document.getElementById('camera-state');
-    if (el) el.textContent = cameraGranted ? 'Allowed' : 'Not allowed yet';
   }
 }
 
@@ -252,8 +220,6 @@ main.addEventListener('change', async (event) => {
     else if (key === 'sensitive') s.sensitive.enabled = on;
     else if (key.startsWith('kind:')) s.sensitive.kinds[key.slice(5) as SensitiveKind] = on;
     else if (key === 'deepScan') s.sensitive.deepScan = on;
-    else if (key === 'guard') s.guard.enabled = on;
-    else if (key === 'emptySeat') s.guard.emptySeat = on;
     else if (key === 'away') s.away.enabled = on;
     else if (key === 'onWindowBlur') s.away.onWindowBlur = on;
     else if (key === 'lockOnAway') s.lock.onAway = on;
@@ -274,7 +240,6 @@ main.addEventListener('click', async (event) => {
   if (target.dataset.mode) await updateSettings((s) => { s.mode = target.dataset.mode as Settings['mode']; });
   if (target.dataset.removeRule) await updateSettings((s) => { delete s.chatRules[target.dataset.removeRule!]; });
   if (target.id === 'shortcuts') await chrome.tabs.create({ url: 'chrome://extensions/shortcuts' });
-  if (target.id === 'camera-test') await testCamera();
   if (target.id === 'nano-download') await downloadNano();
   if (target.id === 'pin-remove') {
     await updateSettings((s) => { s.lock = { hash: null, salt: null, onAway: false }; });
@@ -293,57 +258,6 @@ main.addEventListener('submit', async (event) => {
   await updateSettings((s) => { s.lock = { hash, salt, onAway: true }; });
 });
 
-async function testCamera() {
-  const error = document.getElementById('camera-error')!;
-  error.textContent = '';
-  let stream: MediaStream;
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 } } });
-  } catch (e) {
-    error.textContent = (e as DOMException).name === 'NotAllowedError'
-      ? 'Camera access was blocked. Allow it from the camera icon in the address bar, then try again.'
-      : 'No camera found.';
-    return;
-  }
-  let timer = 0;
-  let detector: FaceDetector | null = null;
-  // Set before saving settings, so the re-render that follows leaves the preview alone.
-  stopCamera = () => {
-    clearInterval(timer);
-    stream.getTracks().forEach((t) => t.stop());
-    detector?.close();
-    stopCamera = null;
-  };
-  await sendToBackground({ type: 'cameraGranted' });
-  await updateSettings((s) => { s.guard.enabled = true; });
-
-  const box = document.getElementById('camera-box')!;
-  const video = document.getElementById('camera-video') as HTMLVideoElement;
-  box.hidden = false;
-  video.srcObject = stream;
-  await video.play();
-  const ready = await FaceDetector.createFromOptions(
-    {
-      wasmLoaderPath: chrome.runtime.getURL('/mediapipe/vision_wasm_internal.js'),
-      wasmBinaryPath: chrome.runtime.getURL('/mediapipe/vision_wasm_internal.wasm'),
-    },
-    {
-      baseOptions: { modelAssetPath: chrome.runtime.getURL('/mediapipe/blaze_face_short_range.tflite'), delegate: 'CPU' },
-      runningMode: 'IMAGE',
-      minDetectionConfidence: 0.6,
-    },
-  );
-  // The user left the guard section while the model was loading.
-  if (!stopCamera) return ready.close();
-  detector = ready;
-  const canvas = document.createElement('canvas');
-  timer = window.setInterval(() => {
-    if (video.readyState < 2) return;
-    const faces = document.getElementById('faces');
-    if (faces) faces.textContent = String(countFaces(ready, video, canvas));
-  }, 333);
-}
-
 async function downloadNano() {
   if (typeof LanguageModel === 'undefined') return;
   const session = await LanguageModel.create({
@@ -360,7 +274,6 @@ async function downloadNano() {
 }
 
 window.addEventListener('hashchange', render);
-window.addEventListener('pagehide', () => stopCamera?.());
 
 async function init() {
   settings = await loadSettings();
@@ -370,8 +283,6 @@ async function init() {
   onSettingsChanged((next) => {
     const focused = document.activeElement?.id;
     settings = next;
-    // Re-rendering would tear down the live camera preview.
-    if (stopCamera) return;
     render();
     if (focused) document.getElementById(focused)?.focus();
   });

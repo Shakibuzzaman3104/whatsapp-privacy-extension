@@ -12,7 +12,6 @@ import {
   chatKey, effectiveCategories, loadSettings, onSettingsChanged, resolveChatRule, updateSettings,
 } from '@/lib/settings';
 import { Shield } from '@/lib/shield';
-import { Snackbar } from '@/lib/snackbar';
 import { buildCss } from '@/lib/styles';
 import type { ContentScriptContext } from 'wxt/utils/content-script-context';
 
@@ -43,9 +42,6 @@ class Engine {
   private idleTimer = 0;
   private chatTitle: string | null = null;
   private wasProtecting = false;
-  /** The camera guard saw someone else: blur everything, but hover still reveals. */
-  private guardActive = false;
-  private readonly snackbar = new Snackbar();
   private readonly shield = new Shield({
     verifyPin: (pin) => {
       const { hash, salt } = this.settings.lock;
@@ -104,12 +100,11 @@ class Engine {
       return message.type === 'getPageInfo';
     });
 
-    this.watchPresence();
+    this.watchWindowBlur();
     this.watchAltKey();
     this.watchIdle();
     void this.send<Status>({ type: 'getStatus' }).then((status) => {
       if (status?.panic) this.shield.set('panic', true);
-      if (status?.guard === 'triggered') this.setGuard(true);
     });
   }
 
@@ -140,13 +135,12 @@ class Engine {
       this.dirty = [];
     }
     this.shield.ensureAttached();
-    this.snackbar.ensureAttached();
   }
 
   private applyClasses() {
     const s = this.settings;
     const rule = resolveChatRule(s, this.adapter.id, this.chatTitle);
-    const on = this.guardActive ? new Set(ALL_CATEGORIES) : effectiveCategories(s, this.adapter.id, rule);
+    const on = effectiveCategories(s, this.adapter.id, rule);
     const cls = this.html.classList;
     this.wasProtecting = this.protecting;
     cls.toggle('veil-on', this.wasProtecting);
@@ -224,10 +218,6 @@ class Engine {
   private onMessage(message: ToContent, reply: (value: PageInfo) => void) {
     switch (message.type) {
       case 'shield':
-        if (message.reason === 'guard') {
-          this.setGuard(message.on);
-          return;
-        }
         if (!message.on && message.reason === 'panic' && this.lockEnabled && this.shield.has('panic')) {
           this.shield.set('lock', true);
           return;
@@ -258,19 +248,6 @@ class Engine {
     });
   }
 
-  private setGuard(on: boolean) {
-    this.guardActive = on;
-    this.applyClasses();
-    if (!on) {
-      this.snackbar.hide();
-      return;
-    }
-    this.snackbar.show('Someone may be looking · chats blurred', {
-      label: 'Pause 10 min',
-      onClick: () => void this.send({ type: 'snoozeGuard', minutes: 10 }),
-    });
-  }
-
   private get lockEnabled() {
     return this.settings.lock.onAway && !!this.settings.lock.hash;
   }
@@ -280,21 +257,10 @@ class Engine {
     else void this.send({ type: 'setPanic', on: false });
   }
 
-  // Tells the background whether this tab is on screen, so the camera only runs while it is.
-  private watchPresence() {
-    const report = () =>
-      void this.send({
-        type: 'presence',
-        active: this.protecting && document.visibilityState === 'visible' && document.hasFocus(),
-      });
-    document.addEventListener('visibilitychange', report);
-    window.addEventListener('focus', report);
+  private watchWindowBlur() {
     window.addEventListener('blur', () => {
-      report();
       if (this.protecting && this.settings.away.enabled && this.settings.away.onWindowBlur) this.coverForAway();
     });
-    window.addEventListener('pagehide', () => void this.send({ type: 'presence', active: false }));
-    report();
   }
 
   private watchAltKey() {

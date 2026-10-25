@@ -2,7 +2,6 @@ node_modules
 .output
 .wxt
 *.log
-public/mediapipe/vision_wasm_internal.*
 design/store/.sized
 test-results
 design/store/raw

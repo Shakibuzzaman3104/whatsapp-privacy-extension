@@ -24,13 +24,12 @@ BLUR WHAT YOU CHOOSE
 SMART PROTECTION
 • Sensitive content: one-time codes, card numbers, bank accounts, passwords, money and bKash/Nagad alerts stay blurred even when message blur is off. Works in English and Bangla
 • Deep scan (optional): Chrome's built-in Gemini Nano catches personal or intimate messages the rules miss, on your device
-• Shoulder-surfer guard (optional): blurs everything, with a small notice, when a second face appears in front of the camera
 • Away mode: covers chats when you're idle or switch to another app, with an optional PIN
 • Panic key: Alt+Shift+V covers every chat tab at once
 • Per-chat rules: always blur, never blur, or hide a chat from the list
 
 PRIVATE BY DESIGN
-No servers, no accounts, no analytics. Veil makes no network requests. Message checks and face detection run inside your browser, and camera frames are never stored or sent.
+No servers, no accounts, no analytics. Veil makes no network requests. Every message check runs inside your browser.
 
 Open source: https://github.com/Shakibuzzaman3104/whatsapp-privacy-extension
 
@@ -42,10 +41,8 @@ Hide the content of web chat apps (WhatsApp Web, Telegram Web, Messenger) from p
 ## Permission justifications
 - **Host access to web.whatsapp.com, web.telegram.org, messenger.com, facebook.com:** Veil applies blur styles to these chat sites and reads message text on the device to find sensitive details. On facebook.com it only acts under /messages.
 - **storage:** saves the user's settings and chat rules locally.
-- **offscreen:** runs the optional shoulder-surfer guard. A hidden extension page uses the camera to count faces on the device.
 - **contextMenus:** adds "Always blur / Never blur / Hide this chat" to the right-click menu on chat sites.
-- **alarms:** restarts the camera guard when the user's 10-minute snooze ends.
-- **Remote code:** none. The face-detection WebAssembly and model are bundled in the package.
+- **Remote code:** none. All code is in the package.
 
 ## Data usage disclosures
 Veil does not collect or transmit any user data. Tick no data categories. Certify that data is not sold, not used for unrelated purposes, and not used for creditworthiness.

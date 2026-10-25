@@ -61,9 +61,6 @@ select, .text-input { padding: 8px 10px; border-radius: var(--r-sm); border: 1px
 .note { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
 .error { color: var(--danger); font-size: 13px; }
 
-.camera { display: flex; gap: 16px; align-items: center; margin-top: 12px; }
-.camera video { width: 160px; height: 120px; border-radius: var(--r-md); background: var(--surface-2); object-fit: cover; transform: scaleX(-1); }
-.faces { font-size: 28px; }
 
 .empty { color: var(--muted); padding: 12px 0; }
 .privacy li { margin: 6px 0; }

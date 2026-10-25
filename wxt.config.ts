@@ -11,7 +11,7 @@ export default defineConfig({
     short_name: 'Veil',
     description:
       'Blur WhatsApp Web, Telegram and Messenger until you hover. Hides codes, card numbers and other private details automatically. 100% on-device.',
-    permissions: ['storage', 'offscreen', 'contextMenus', 'alarms'],
+    permissions: ['storage', 'contextMenus'],
     host_permissions: [
       'https://web.whatsapp.com/*',
       'https://web.telegram.org/*',
@@ -27,10 +27,6 @@ export default defineConfig({
         suggested_key: { default: 'Alt+Shift+B' },
         description: 'Turn Veil protection on or off',
       },
-    },
-    content_security_policy: {
-      // MediaPipe's face detector is WebAssembly bundled with the extension.
-      extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
     },
     icons: { 16: '/icon/16.png', 32: '/icon/32.png', 48: '/icon/48.png', 128: '/icon/128.png' },
     action: {

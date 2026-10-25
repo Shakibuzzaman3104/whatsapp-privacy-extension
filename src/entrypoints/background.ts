@@ -2,8 +2,7 @@
  * @author Shakib
  * @since 25/10/26
  */
-import { GuardState } from '@/lib/guard';
-import type { GuardStatus, NanoStatus, Status, ToBackground, ToContent } from '@/lib/messages';
+import type { NanoStatus, Status, ToBackground, ToContent } from '@/lib/messages';
 import { type ChatRule, type Settings, loadSettings, onSettingsChanged, updateSettings } from '@/lib/settings';
 
 const CHAT_URLS = [
@@ -12,7 +11,6 @@ const CHAT_URLS = [
   'https://www.messenger.com/*',
   'https://www.facebook.com/messages*',
 ];
-const OFFSCREEN_URL = '/offscreen.html';
 
 declare const LanguageModel: {
   availability(): Promise<NanoStatus>;
@@ -27,28 +25,19 @@ interface NanoSession {
 export default defineBackground(() => {
   let settings: Settings | null = null;
   let panic = false;
-  let guardStatus: GuardStatus = 'off';
-  let snoozedUntil = 0;
-  const activeTabs = new Set<number>();
-  const guard = new GuardState(false);
 
   const ready = loadSettings().then((s) => {
     settings = s;
-    guard.setEmptySeat(s.guard.emptySeat);
     void updateIcon();
     return s;
   });
-  void chrome.storage.session.get(['panic', 'activeTabs']).then((saved) => {
+  void chrome.storage.session.get('panic').then((saved) => {
     panic = !!saved.panic;
-    for (const id of (saved.activeTabs as number[] | undefined) ?? []) activeTabs.add(id);
-    void syncCamera();
   });
 
   onSettingsChanged((s) => {
     settings = s;
-    guard.setEmptySeat(s.guard.emptySeat);
     void updateIcon();
-    void syncCamera();
   });
 
   // ---- broadcasting -------------------------------------------------------
@@ -99,63 +88,6 @@ export default defineBackground(() => {
     if (!tab?.id || !id.startsWith('rule:')) return;
     chrome.tabs.sendMessage(tab.id, { type: 'setChatRule', rule: id.slice(5) as ChatRule } satisfies ToContent).catch(() => {});
   });
-
-  // ---- shoulder-surfer guard ---------------------------------------------
-
-  async function hasOffscreen() {
-    const contexts = await chrome.runtime.getContexts({
-      contextTypes: [chrome.runtime.ContextType.OFFSCREEN_DOCUMENT],
-      documentUrls: [chrome.runtime.getURL(OFFSCREEN_URL)],
-    });
-    return contexts.length > 0;
-  }
-
-  let syncing = Promise.resolve();
-  function syncCamera() {
-    syncing = syncing.then(syncCameraNow, syncCameraNow);
-    return syncing;
-  }
-
-  // The camera runs only while the guard is on, the camera is allowed, a chat tab
-  // is on screen and focused, and the guard isn't snoozed.
-  async function syncCameraNow() {
-    const s = settings ?? (await ready);
-    const { cameraGranted } = await chrome.storage.local.get('cameraGranted');
-    const want = s.enabled && s.guard.enabled && !!cameraGranted && activeTabs.size > 0 && Date.now() >= snoozedUntil;
-    const running = await hasOffscreen();
-
-    if (!s.guard.enabled) guardStatus = 'off';
-    else if (!cameraGranted) guardStatus = 'needs-camera';
-    else if (Date.now() < snoozedUntil) guardStatus = 'paused';
-    else if (guardStatus !== 'triggered' && guardStatus !== 'error') guardStatus = 'watching';
-
-    if (want && !running) {
-      await chrome.offscreen.createDocument({
-        url: OFFSCREEN_URL,
-        reasons: [chrome.offscreen.Reason.USER_MEDIA],
-        justification: 'Counts faces in front of the camera on this device to cover chats when someone else is looking.',
-      });
-    } else if (!want && running) {
-      await chrome.offscreen.closeDocument();
-      if (guard.covered) await setGuardCover(false);
-      guard.reset();
-    }
-  }
-
-  async function setGuardCover(on: boolean) {
-    if (on) guardStatus = 'triggered';
-    else if (guardStatus === 'triggered') guardStatus = 'watching';
-    await broadcast({ type: 'shield', reason: 'guard', on });
-  }
-
-  async function onFaces(count: number) {
-    if (Date.now() < snoozedUntil) return;
-    if (guardStatus === 'error') guardStatus = 'watching';
-    const decision = guard.push(count);
-    if (decision.changed) await setGuardCover(decision.covered);
-  }
-
-  chrome.alarms.onAlarm.addListener(() => void syncCamera());
 
   // ---- on-device AI deep scan --------------------------------------------
 
@@ -208,34 +140,8 @@ export default defineBackground(() => {
 
   // ---- messages -----------------------------------------------------------
 
-  chrome.runtime.onMessage.addListener((message: ToBackground, sender, reply) => {
-    const tabId = sender.tab?.id;
+  chrome.runtime.onMessage.addListener((message: ToBackground, _sender, reply) => {
     switch (message.type) {
-      case 'presence':
-        if (tabId === undefined) return;
-        if (message.active) activeTabs.add(tabId);
-        else activeTabs.delete(tabId);
-        void chrome.storage.session.set({ activeTabs: [...activeTabs] });
-        void syncCamera();
-        return;
-      case 'faces':
-        void onFaces(message.count);
-        return;
-      case 'cameraError':
-        guardStatus = message.name === 'NotAllowedError' ? 'needs-camera' : 'error';
-        if (message.name === 'NotAllowedError') void chrome.storage.local.remove('cameraGranted').then(syncCamera);
-        return;
-      case 'cameraGranted':
-        void chrome.storage.local.set({ cameraGranted: true }).then(syncCamera);
-        return;
-      case 'snoozeGuard':
-        snoozedUntil = Date.now() + message.minutes * 60_000;
-        void setGuardCover(false).then(() => {
-          guard.reset();
-          return syncCamera();
-        });
-        chrome.alarms.create('guard-snooze', { when: snoozedUntil + 500 });
-        return;
       case 'setPanic':
         void setPanic(message.on);
         return;
@@ -246,13 +152,9 @@ export default defineBackground(() => {
         return true;
       case 'getStatus':
         void Promise.all([ready, nanoStatus()]).then(([, nanoState]) =>
-          reply({ panic, guard: guardStatus, nano: nanoState } satisfies Status),
+          reply({ panic, nano: nanoState } satisfies Status),
         );
         return true;
     }
-  });
-
-  chrome.tabs.onRemoved.addListener((tabId) => {
-    if (activeTabs.delete(tabId)) void syncCamera();
   });
 });

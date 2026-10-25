@@ -2,8 +2,8 @@
  * @author Shakib
  * @since 25/10/26
  *
- * Full-page frosted cover used by panic, away and PIN lock. (The camera guard
- * only blurs and shows a snackbar.) Lives in a closed shadow root so the site's CSS can't touch it.
+ * Full-page frosted cover used by panic, away and PIN lock. Lives in a closed
+ * shadow root so the site's CSS can't touch it.
  */
 import type { ShieldReason } from './messages';
 

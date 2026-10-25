@@ -2,7 +2,7 @@
  * @author Shakib
  * @since 25/10/26
  */
-import type { GuardStatus, PageInfo, Status, ToContent } from '@/lib/messages';
+import type { PageInfo, Status, ToContent } from '@/lib/messages';
 import { sendToBackground } from '@/lib/messages';
 import {
   CATEGORIES, type Category, type ChatRule, type Settings, type SiteId,
@@ -28,7 +28,7 @@ const SITE_LINKS: { label: string; url: string }[] = [
 const app = document.getElementById('app')!;
 let settings: Settings;
 let page: PageInfo | null = null;
-let status: Status = { panic: false, guard: 'off', nano: 'unavailable' };
+let status: Status = { panic: false, nano: 'unavailable' };
 let panicKey = 'Alt+Shift+V';
 
 const escapeHtml = (value: string) =>
@@ -36,17 +36,6 @@ const escapeHtml = (value: string) =>
 
 const toggle = (id: string, checked: boolean, label: string, disabled = false) =>
   `<label class="switch"><input type="checkbox" id="${id}" ${checked ? 'checked' : ''} ${disabled ? 'disabled' : ''} aria-label="${escapeHtml(label)}"><span></span></label>`;
-
-function guardLine(state: GuardStatus): string {
-  switch (state) {
-    case 'needs-camera': return `<small class="warn">Needs camera access · <a href="#" data-open="guard">Allow</a></small>`;
-    case 'watching': return '<small>Watching · video never leaves this device</small>';
-    case 'triggered': return '<small class="warn">Blurring everything · someone else is in view</small>';
-    case 'paused': return '<small>Paused for a few minutes</small>';
-    case 'error': return '<small class="warn">Camera unavailable</small>';
-    default: return '<small>Off · blurs everything when a 2nd face appears</small>';
-  }
-}
 
 function awayLine(s: Settings): string {
   const parts = [`After ${s.away.idleSeconds}s idle`];
@@ -112,7 +101,6 @@ function render() {
       <section>
         <div class="section-head"><h3 class="heading">Smart guards</h3></div>
         <div class="guard">${icon('shield')}<div class="text"><strong>Sensitive content</strong>${sensitiveLine(s)}</div>${toggle('sensitive', s.sensitive.enabled, 'Sensitive content')}</div>
-        <div class="guard">${icon('users')}<div class="text"><strong>Shoulder-surfer guard</strong>${guardLine(s.guard.enabled ? status.guard : 'off')}</div>${toggle('guard', s.guard.enabled, 'Shoulder-surfer guard')}</div>
         <div class="guard">${icon('clock')}<div class="text"><strong>Auto-blur when away</strong>${s.away.enabled ? awayLine(s) : '<small>Off</small>'}</div>${toggle('away', s.away.enabled, 'Auto-blur when away')}</div>
       </section>
       ${chat}
@@ -144,13 +132,8 @@ app.addEventListener('change', async (event) => {
     if (input.id === 'enabled') s.enabled = on;
     else if (input.id === 'site-enabled' && page) s.sites[page.site].enabled = on;
     else if (input.id === 'sensitive') s.sensitive.enabled = on;
-    else if (input.id === 'guard') s.guard.enabled = on;
     else if (input.id === 'away') s.away.enabled = on;
   });
-  if (input.id === 'guard' && on) {
-    const { cameraGranted } = await chrome.storage.local.get('cameraGranted');
-    if (!cameraGranted) openOptions('guard');
-  }
 });
 
 app.addEventListener('click', async (event) => {

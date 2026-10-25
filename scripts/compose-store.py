@@ -53,8 +53,8 @@ screenshot("1-all-but-identity.png", "Everything blurred, except who it’s from
            "Names and photos stay sharp. Hover a chat or a message to read it.", "all-but-identity.png")
 screenshot("2-sensitive.png", "Private details stay hidden, automatically",
            "One-time codes, card numbers, passwords and bKash alerts, even with blur off.", "sensitive.png")
-screenshot("3-guard.png", "Someone looking over your shoulder?",
-           "Veil blurs everything and shows a quiet notice. Hover still works. Video never leaves your device.", "guard.png")
+screenshot("3-cover.png", "Step away, stay covered",
+           "Veil covers your chats when you go idle, or the moment you press Alt+Shift+V. Add a PIN to lock them.", "cover.png")
 render("4-controls.png", 1280, 800, f"""
   <div style="display:flex;gap:56px;align-items:center;height:100%;padding:0 70px">
     <div style="flex:0 0 360px">
@@ -64,7 +64,7 @@ render("4-controls.png", 1280, 800, f"""
     <img class="shot" src="{sized('popup.png', height=700)[0]}">
   </div>""")
 screenshot("5-on-device.png", "Private by design",
-           "No servers, no accounts, no tracking. Detection runs on your device, even the AI.", "options-sensitive.png")
+           "No servers, no accounts, no tracking. Every check runs on your device, even the AI.", "options-sensitive.png")
 
 # Fades the art in from the left so its paper meets the page with no seam.
 hero = (f"background:url('file://{HERO}') no-repeat;"

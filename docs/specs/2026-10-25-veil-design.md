@@ -2,6 +2,9 @@
 
 Date: 2026-10-25 · Status: approved by owner ("you are the boss")
 
+> **Update 2026-10-25:** the owner dropped the shoulder-surfer guard (feature 3) and everything
+> behind it: camera, MediaPipe, the offscreen page and the `offscreen` and `alarms` permissions.
+
 ## Goal
 A Chrome (MV3) extension that blurs private content on WhatsApp Web, Telegram Web and
 Messenger until you hover, like "Privacy Extension for WhatsApp Web", but context-aware.

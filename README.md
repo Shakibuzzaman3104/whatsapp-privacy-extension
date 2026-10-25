@@ -8,15 +8,15 @@ and knows what to keep hidden. 100% on-device.</p>
 ---
 
 Privacy blur extensions treat every message the same and only react when you do. Veil also watches the context:
-it keeps one-time codes and card numbers blurred even when you turn message blur off, covers the screen when
-someone looks over your shoulder, and hides your chats when you step away.
+it keeps one-time codes and card numbers blurred even when you turn message blur off, and hides your chats when
+you step away.
 
 <p align="center"><img src="design/store/final/marquee-1400x560.png" alt="Veil: your chats, for your eyes only"></p>
 
 | | |
 |---|---|
 | ![All but names and photos](design/store/final/1-all-but-identity.png) | ![Sensitive details hidden automatically](design/store/final/2-sensitive.png) |
-| ![Shoulder-surfer guard](design/store/final/3-guard.png) | ![Popup](design/store/final/4-controls.png) |
+| ![Covered while you're away](design/store/final/3-cover.png) | ![Popup](design/store/final/4-controls.png) |
 
 _Screenshots show the real extension on a demo page with made-up chats (`npm run store:shots`)._
 
@@ -34,11 +34,6 @@ unread counts and the "last seen" line, and keeps only names and profile photos 
 alerts (bKash, Nagad, Rocket) or street addresses stay blurred whatever your other settings are. The rules work in
 English and Bangla. Optional _deep scan_ uses Chrome's built-in Gemini Nano to catch personal or intimate
 messages the rules miss, on-device.
-
-**Shoulder-surfer guard** (off by default). A face detector bundled with the extension (MediaPipe BlazeFace)
-counts faces at about 3 fps. When a second face appears it blurs everything (names and photos too) and shows a small
-notice at the top; hover still reveals. Optionally it does the same when nobody is at the screen. The camera only runs while a chat tab is on screen and focused, and frames never leave
-memory.
 
 **Away & lock.** Covers chats after you go idle, or when you switch to another app. Optionally needs a PIN to
 uncover.
@@ -63,9 +58,9 @@ browser. See [PRIVACY.md](PRIVACY.md).
 ## Develop
 
 ```bash
-npm install          # also copies MediaPipe's WebAssembly into public/mediapipe
+npm install
 npm run dev          # Chrome with the extension loaded and live reload
-npm test             # unit tests (classifier, guard logic)
+npm test             # unit tests (classifier)
 npm run e2e          # builds, then runs Playwright against fixture pages served at the real chat URLs
 npm run typecheck
 npm run zip          # store-ready zip in .output/
@@ -85,9 +80,7 @@ page are plain TypeScript and CSS.
 - `src/entrypoints/content.ts` flips those classes, tags sensitive messages (`data-veil-s`) as they arrive,
   applies chat rules and drives the full-page cover.
 - `src/lib/classify.ts` holds the sensitive-content rules: pure functions with unit tests.
-- `src/entrypoints/background.ts` handles panic, shortcuts, the context menu, the camera lifecycle and
-  Gemini Nano.
-- `src/entrypoints/offscreen/` is the hidden page that owns the camera and sends back only a face count.
+- `src/entrypoints/background.ts` handles panic, shortcuts, the context menu and Gemini Nano.
 
 ### Site support
 
@@ -103,7 +96,6 @@ Broken on a site? Please open an issue or a pull request against its adapter fil
 
 - The PIN stops a casual glance, not a determined person: anyone at your computer can turn extensions off.
 - Deep scan needs a Chrome build and device that support Gemini Nano. Elsewhere it shows as unavailable.
-- The camera light stays on while the shoulder-surfer guard watches.
 
 ## License
 

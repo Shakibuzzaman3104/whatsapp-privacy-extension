@@ -36,11 +36,6 @@ export interface Settings {
     /** On-device Gemini Nano deep scan. */
     deepScan: boolean;
   };
-  guard: {
-    enabled: boolean;
-    /** Also cover chats when nobody is in front of the camera. */
-    emptySeat: boolean;
-  };
   away: {
     enabled: boolean;
     idleSeconds: number;
@@ -75,7 +70,6 @@ export const DEFAULT_SETTINGS: Settings = {
     kinds: { otp: true, card: true, bank: true, password: true, phone: false, email: false, money: true, address: false },
     deepScan: false,
   },
-  guard: { enabled: false, emptySeat: false },
   away: { enabled: true, idleSeconds: 60, onWindowBlur: false },
   lock: { hash: null, salt: null, onAway: false },
   chatRules: {},
